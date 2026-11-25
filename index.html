@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -10,125 +9,169 @@
 body{
  margin:0;
  font-family:Tahoma,sans-serif;
- background:#071b38;
- color:#e7ffff;
- padding:20px;
+ background:#071a35;
+ color:#fff;
 }
-header{text-align:center;padding:25px 10px}
-.logo{
- width:75px;height:75px;margin:auto;
- display:grid;place-items:center;
- border-radius:22px;
- background:#102d50;
- color:#ffd166;
- font-size:38px;
- border:2px solid #ffd166;
+header{
+ background:#102b50;
+ padding:25px 15px;
+ text-align:center;
+ border-bottom:2px solid #18d6d0;
 }
-h1{color:#38e0d0;margin-bottom:8px}
-p{color:#b8d8e7;line-height:2}
-h2{color:#38e0d0;font-size:19px}
+header h1{color:#18d6d0;margin:0;font-size:32px}
+header p{color:#ddd}
+main{padding:20px;max-width:650px;margin:auto}
+h2{color:#18d6d0}
 .card{
- background:#102b4b;
- border:1px solid #24496b;
- border-radius:16px;
- padding:18px;margin:13px 0;
+ background:#102b50;
+ padding:20px;
+ margin:14px 0;
+ border:1px solid #1a486c;
+ border-radius:15px;
 }
 button{
- width:100%;padding:15px;margin:7px 0;
- border:1px solid #2c637b;
- border-radius:12px;
- background:#123b5c;
- color:#42e5d6;
+ width:100%;
+ padding:15px;
+ margin:7px 0;
+ border:0;
+ border-radius:10px;
+ background:#18d6d0;
+ color:#071a35;
  font-size:16px;
  font-weight:bold;
+ cursor:pointer;
 }
-button:active{background:#205d70}
-.gold{color:#ffd166}
-input{
- width:100%;padding:13px;
- border-radius:10px;border:0;
- margin:8px 0;font-size:15px;
-}
+button.gold{background:#e8bd48}
+button.dark{background:#193b61;color:white}
+button:active{transform:scale(.98)}
 .hidden{display:none}
-footer{text-align:center;color:#91aebd;margin-top:30px}
+.back{background:#193b61;color:white}
+footer{text-align:center;color:#aaa;padding:25px}
 </style>
 </head>
 <body>
+
 <header>
- <div class="logo">★</div>
- <h1>نخبه</h1>
- <p>هوشمندانه یاد بگیر، درخشان بدرخش!</p>
+<h1>⭐ نخبه ⭐</h1>
+<p>هوشمندانه یاد بگیر، قدرتمند پیشرفت کن</p>
 </header>
 
-<main id="home">
- <div class="card">
-  <h2>🎓 انتخاب پایه تحصیلی</h2>
-  <button onclick="grade(7)">پایه هفتم</button>
-  <button onclick="grade(8)">پایه هشتم</button>
-  <button onclick="grade(9)">پایه نهم</button>
- </div>
- <div class="card">
-  <h2>✨ امکانات نخبه</h2>
-  <p>📚 آموزش درس‌ها</p>
-  <p>📝 آزمون و نمونه سؤالات</p>
-  <p>🏆 رقابت و رتبه‌بندی</p>
-  <p>📖 جزوه و خلاصه درس‌ها</p>
- </div>
-</main>
+<main>
+
+<section id="home">
+<div class="card">
+<h2>خوش آمدی به نخبه!</h2>
+<p>پایه تحصیلی خودت را انتخاب کن:</p>
+<button onclick="showGrade(7)">پایه هفتم</button>
+<button onclick="showGrade(8)">پایه هشتم</button>
+<button onclick="showGrade(9)">پایه نهم</button>
+</div>
+
+<div class="card">
+<h2>امکانات آموزشی</h2>
+<button class="gold" onclick="showSection('tests')">📝 آزمون آزمایشی</button>
+<button class="gold" onclick="showSection('planner')">📅 برنامه‌ریز مطالعه</button>
+<button class="gold" onclick="showSection('notes')">📚 جزوه و خلاصه‌ها</button>
+</div>
+</section>
 
 <section id="lessons" class="hidden">
- <div class="card">
-  <h2 id="gradeTitle"></h2>
-  <p>درس مورد نظرت را انتخاب کن:</p>
-  <div id="subjects"></div>
-  <button onclick="back()">⬅ بازگشت</button>
- </div>
+<div class="card">
+<h2 id="gradeTitle">درس‌ها</h2>
+<p>درس موردنظرت را انتخاب کن:</p>
+<div id="lessonButtons"></div>
+<button class="back" onclick="goHome()">بازگشت</button>
+</div>
 </section>
 
-<section id="study" class="hidden">
- <div class="card">
-  <h2 id="subjectTitle"></h2>
-  <p id="studyText">به بخش آموزش خوش آمدی.</p>
-  <button onclick="alert('محتوای آموزشی این درس به زودی اضافه می‌شود.')">📚 مشاهده آموزش</button>
-  <button onclick="alert('آزمون این درس به زودی اضافه می‌شود.')">📝 آزمون درس</button>
-  <button onclick="backToLessons()">⬅ بازگشت به درس‌ها</button>
- </div>
+<section id="detail" class="hidden">
+<div class="card">
+<h2 id="lessonTitle"></h2>
+<p id="lessonText">محتوای آموزشی این درس به‌زودی در این قسمت قرار می‌گیرد.</p>
+<button class="back" onclick="backToLessons()">بازگشت به درس‌ها</button>
+</div>
 </section>
 
-<footer>نخبه | آینده از آن توست ⭐</footer>
+<section id="tests" class="hidden">
+<div class="card">
+<h2>📝 آزمون نمونه</h2>
+<p>حاصل ۷ × ۸ چند است؟</p>
+<button onclick="answer(false)">۵۴</button>
+<button onclick="answer(true)">۵۶</button>
+<button onclick="answer(false)">۶۴</button>
+<p id="result"></p>
+<button class="back" onclick="goHome()">بازگشت</button>
+</div>
+</section>
+
+<section id="planner" class="hidden">
+<div class="card">
+<h2>📅 برنامه مطالعه</h2>
+<p>امروز چه درسی می‌خوانی؟</p>
+<input id="study" placeholder="نام درس را بنویس"
+style="width:100%;padding:13px;border-radius:8px">
+<button onclick="addStudy()">ثبت برنامه</button>
+<ul id="studyList"></ul>
+<button class="back" onclick="goHome()">بازگشت</button>
+</div>
+</section>
+
+<section id="notes" class="hidden">
+<div class="card">
+<h2>📚 جزوه و خلاصه‌ها</h2>
+<p>جزوه‌های آموزشی هر پایه در این بخش قرار خواهند گرفت.</p>
+<button class="back" onclick="goHome()">بازگشت</button>
+</div>
+</section>
+
+</main>
+
+<footer>نخبه | آینده از یادگیری شروع می‌شود 💙</footer>
 
 <script>
 let currentGrade=7;
-const data={
-7:["ریاضی","علوم","فارسی","عربی","انگلیسی","مطالعات اجتماعی","پیام‌های آسمان","قرآن","کار و فناوری"],
-8:["ریاضی","علوم","فارسی","عربی","انگلیسی","مطالعات اجتماعی","پیام‌های آسمان","قرآن","کار و فناوری"],
-9:["ریاضی","علوم","فارسی","عربی","انگلیسی","مطالعات اجتماعی","پیام‌های آسمان","قرآن","کار و فناوری"]
-};
-function grade(n){
- currentGrade=n;
- document.getElementById("home").classList.add("hidden");
- document.getElementById("study").classList.add("hidden");
- document.getElementById("lessons").classList.remove("hidden");
- document.getElementById("gradeTitle").innerText="پایه "+n+" | انتخاب درس";
- document.getElementById("subjects").innerHTML="";
- data[n].forEach(s=>{
- let b=document.createElement("button");
- b.innerText="📘 "+s;
- b.onclick=()=>openSubject(s);
- document.getElementById("subjects").appendChild(b);
+
+function hideAll(){
+ document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'));
+}
+function showGrade(g){
+ currentGrade=g;
+ hideAll();
+ document.getElementById('lessons').classList.remove('hidden');
+ document.getElementById('gradeTitle').innerText='درس‌های پایه '+['','اول','دوم','سوم','چهارم','پنجم','ششم','هفتم','هشتم','نهم'][g];
+ let subjects=['ریاضی','علوم تجربی','فارسی','عربی','زبان انگلیسی','مطالعات اجتماعی','پیام‌های آسمان','کار و فناوری'];
+ document.getElementById('lessonButtons').innerHTML='';
+ subjects.forEach(s=>{
+  let b=document.createElement('button');
+  b.className='dark';
+  b.innerText=s;
+  b.onclick=()=>openLesson(s);
+  document.getElementById('lessonButtons').appendChild(b);
  });
 }
-function openSubject(s){
- document.getElementById("lessons").classList.add("hidden");
- document.getElementById("study").classList.remove("hidden");
- document.getElementById("subjectTitle").innerText=s+" | پایه "+currentGrade;
- document.getElementById("studyText").innerText="بخش آموزشی "+s+" انتخاب شد. محتوای درس باید به برنامه اضافه شود.";
+function openLesson(s){
+ hideAll();
+ document.getElementById('detail').classList.remove('hidden');
+ document.getElementById('lessonTitle').innerText=s+' | پایه '+currentGrade;
 }
-function back(){
- document.getElementById("lessons").classList.add("hidden");
- document.getElementById("home").classList.remove("hidden");
+function backToLessons(){showGrade(currentGrade)}
+function goHome(){hideAll();document.getElementById('home').classList.remove('hidden')}
+function showSection(id){
+ hideAll();
+ document.getElementById(id).classList.remove('hidden');
 }
-function backToLessons(){grade(currentGrade)}
+function answer(correct){
+ document.getElementById('result').innerText=correct?'آفرین! پاسخ درست است 🎉':'اشکالی ندارد! دوباره تلاش کن 💙';
+}
+function addStudy(){
+ let value=document.getElementById('study').value.trim();
+ if(!value)return;
+ let li=document.createElement('li');
+ li.innerText=value;
+ document.getElementById('studyList').appendChild(li);
+ document.getElementById('study').value='';
+}
 </script>
 </body>
 </html>
+
