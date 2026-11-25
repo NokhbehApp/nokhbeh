@@ -90,6 +90,98 @@ function show(id){
  document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'));
  document.getElementById(id).classList.remove('hidden');
 }
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>نخبه | ریاضی هفتم</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#071a35;color:white;font-family:Tahoma}
+header{background:#102b50;text-align:center;padding:22px;border-bottom:2px solid #18d6d0}
+header h1{color:#18d6d0;margin:0}
+main{max-width:650px;margin:auto;padding:18px}
+.card{background:#102b50;border:1px solid #1a486c;border-radius:15px;padding:18px;margin:14px 0}
+h2,h3{color:#18d6d0}
+p{line-height:2}
+button{width:100%;padding:14px;margin:7px 0;border:0;border-radius:10px;background:#18d6d0;color:#071a35;font-weight:bold;font-size:15px}
+.back{background:#193b61;color:white}
+.gold{background:#e8bd48}
+.hidden{display:none}
+.answer{background:#193b61;color:white}
+footer{text-align:center;color:#aaa;padding:20px}
+</style>
+</head>
+<body>
+<header>
+<h1>⭐ نخبه ⭐</h1>
+<p>آموزش هوشمند ریاضی هفتم</p>
+</header>
+<main>
+
+<section id="home">
+<div class="card">
+<h2>ریاضی هفتم</h2>
+<p>فصل اول: راهبردهای حل مسئله</p>
+<button onclick="show('lesson')">📘 شروع آموزش درس اول</button>
+<button class="gold" onclick="show('quiz')">📝 آزمون درس اول</button>
+</div>
+</section>
+
+<section id="lesson" class="hidden">
+<div class="card">
+<h2>درس اول: راهبرد رسم شکل</h2>
+<p>گاهی برای حل یک مسئله ریاضی، کشیدن شکل به ما کمک می‌کند اطلاعات مسئله را بهتر درک کنیم.</p>
+<h3>مثال آموزشی</h3>
+<p>علی ۳ سیب دارد و رضا ۲ سیب بیشتر از علی دارد. روی هم چند سیب دارند؟</p>
+<p>تعداد سیب‌های علی: ۳</p>
+<p>تعداد سیب‌های رضا: ۳ + ۲ = ۵</p>
+<p>مجموع: ۳ + ۵ = ۸</p>
+<p>پاسخ: ۸ سیب 🍎</p>
+<h3>نکته مهم</h3>
+<p>در راهبرد رسم شکل، اطلاعات مسئله را به شکل ساده نمایش می‌دهیم تا راه‌حل را پیدا کنیم.</p>
+</div>
+<div class="card">
+<h2>تمرین درس</h2>
+<p>مریم ۴ مداد دارد. سارا ۳ مداد بیشتر از مریم دارد. مجموع مدادهای آن‌ها چندتاست؟</p>
+<button class="answer" onclick="document.getElementById('solution').classList.toggle('hidden')">نمایش پاسخ تشریحی</button>
+<div id="solution" class="hidden">
+<p>مدادهای سارا: ۴ + ۳ = ۷</p>
+<p>مجموع: ۴ + ۷ = ۱۱ مداد</p>
+</div>
+</div>
+<button class="gold" onclick="show('quiz')">رفتن به آزمون</button>
+<button class="back" onclick="show('home')">بازگشت</button>
+</section>
+
+<section id="quiz" class="hidden">
+<div class="card">
+<h2>آزمون درس اول</h2>
+<p>سؤال ۱: علی ۵ توپ دارد و رضا ۲ توپ بیشتر دارد. مجموع توپ‌ها چندتاست؟</p>
+<button class="answer" onclick="check(1,7)">۷</button>
+<button class="answer" onclick="check(1,12)">۱۲</button>
+<button class="answer" onclick="check(1,10)">۱۰</button>
+<p id="result1"></p>
+</div>
+<div class="card">
+<p>سؤال ۲: کدام کار به فهم بهتر مسئله کمک می‌کند؟</p>
+<button class="answer" onclick="check(2,1)">رسم شکل</button>
+<button class="answer" onclick="check(2,2)">حدس بی‌دلیل</button>
+<button class="answer" onclick="check(2,3)">نادیده گرفتن اطلاعات</button>
+<p id="result2"></p>
+</div>
+<button class="back" onclick="show('home')">بازگشت به صفحه اصلی</button>
+</section>
+
+</main>
+<footer>نخبه | یادگیری برای همه 💙</footer>
+<script>
+function show(id){
+ document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'));
+ document.getElementById(id).classList.remove('hidden');
+}
 function check(q,a){
  let correct=(q===1 && a===12)||(q===2 && a===1);
  document.getElementById('result'+q).innerText=correct?'آفرین! پاسخ درست است 🎉':'پاسخ درست نیست؛ دوباره تلاش کن 💙';
@@ -97,3 +189,4 @@ function check(q,a){
 </script>
 </body>
 </html>
+
