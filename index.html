@@ -3,252 +3,161 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>نبرد نخبگان</title>
 <style>
 *{box-sizing:border-box}
-body{
- margin:0;background:#10182c;color:white;
- font-family:Tahoma,Arial;padding:15px;
-}
-header{
- text-align:center;padding:18px;
- background:linear-gradient(135deg,#183e70,#111c39);
- border-radius:18px;border:1px solid #2878a8;
-}
-h1{color:#48e3e8;margin:5px}
-h2{font-size:19px;color:#ffd166}
-.stats{
- display:grid;grid-template-columns:repeat(3,1fr);
- gap:8px;margin:15px 0;
-}
-.stat,.panel{
- background:#1c2943;border:1px solid #344765;
- border-radius:13px;padding:13px;text-align:center;
-}
-.stat b{display:block;color:#ffd166;margin-top:7px}
-.panel{margin:12px 0;text-align:right}
-button{
- border:0;border-radius:10px;padding:11px;
- background:#168eaa;color:white;font-weight:bold;
- cursor:pointer;font-size:14px;margin:4px;
-}
-button:disabled{opacity:.4}
-.gold{background:#b47a18}
-.red{background:#b53d49}
-.green{background:#178b60}
-.cards{
- display:grid;grid-template-columns:repeat(2,1fr);gap:10px
-}
-.card{
- background:#263957;border:1px solid #526c8d;
- border-radius:13px;padding:12px;text-align:center;
-}
-.card strong{color:#ffd166}
-.small{font-size:12px;color:#b9c9dc}
-#message{color:#65e9ba;line-height:2}
-select{padding:9px;border-radius:8px}
+body{margin:0;background:#101c30;color:white;font-family:tahoma;text-align:center}
+header{background:#172b46;padding:15px}
+h1{color:#ffd36b;margin:5px}
+.stats{display:flex;justify-content:space-around;gap:5px;padding:12px;flex-wrap:wrap}
+.stats span{background:#243c59;padding:10px;border-radius:10px}
+.arena{margin:12px;background:#315e43;border:5px solid #b78b4d;border-radius:15px;padding:12px}
+.towers{display:flex;justify-content:space-around;margin:12px}
+.tower{background:#b68b55;padding:15px 8px;border-radius:10px;width:29%;color:#211608}
+.hp{height:9px;background:#777;border-radius:8px;overflow:hidden;margin-top:8px}
+.hp div{height:100%;background:#37df73;width:100%}
+.bridge{background:#a87943;padding:12px;margin:12px;border-radius:8px}
+#units{min-height:85px;display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.unit{font-size:25px;animation:move 1s infinite alternate}
+@keyframes move{to{transform:translateY(-5px)}}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;padding:10px}
+.card{background:#263d5a;border:2px solid #d4aa50;border-radius:10px;padding:10px;color:white}
+.card:disabled{opacity:.4}
+button{cursor:pointer}
+.action{background:#d7a744;color:#241b0b;padding:12px;border:0;border-radius:10px;font-weight:bold}
+#log{min-height:30px;color:#ffe28a;padding:8px}
 </style>
 </head>
 <body>
-
 <header>
 <h1>⚔️ نبرد نخبگان ⚔️</h1>
 <div>امپراتوری خودت را بساز!</div>
 </header>
 
 <div class="stats">
- <div class="stat">🪙 سکه<b id="coins">500</b></div>
- <div class="stat">🏆 کاپ<b id="cups">0</b></div>
- <div class="stat">👑 لیگ<b id="league">برنز</b></div>
+<span>👑 سطح: <b id="level">1</b></span>
+<span>🏆 کاپ: <b id="cups">0</b></span>
+<span>🪙 سکه: <b id="coins">500</b></span>
+<span>⭐ XP: <b id="xp">0</b></span>
 </div>
 
-<div class="panel">
-<h2>🏰 مقر فرماندهی</h2>
-<p>سطح فرمانده: <b id="commander">1</b></p>
-<p>تعداد پیروزی: <b id="wins">0</b></p>
-<p>تعداد شکست: <b id="losses">0</b></p>
+<div class="arena">
+<h3>🏰 میدان نبرد</h3>
+<div class="towers">
+<div class="tower">🏰 برج دشمن<div class="hp"><div id="enemyhp"></div></div></div>
+<div class="tower">👑 برج اصلی<div class="hp"><div id="mainhp"></div></div></div>
+<div class="tower">🏰 برج دشمن<div class="hp"><div id="enemyhp2"></div></div></div>
+</div>
+<div class="bridge">🌉 مسیر اول　 |　 🌉 مسیر دوم</div>
+<div id="units"></div>
+<div id="log">برای شروع، سرباز انتخاب کن!</div>
 </div>
 
-<div class="panel">
-<h2>⚔️ میدان نبرد</h2>
-<p>آماده‌ای با ارتش خودت به جنگ بروی؟</p>
-<div style="text-align:center;font-size:45px">🛡️ ⚔️ 🛡️</div>
-<button class="green" onclick="battle()" style="width:95%">
-شروع نبرد!
-</button>
-<p id="message">فرمانده، منتظر دستور تو هستیم!</p>
-</div>
+<div>💧 اکسیر: <b id="elixir">5</b> / 10</div>
+<div class="hp"><div id="energy" style="width:50%"></div></div>
 
-<div class="panel">
-<h2>🎴 ارتش من</h2>
-<div class="cards" id="army"></div>
-</div>
-
-<div class="panel">
-<h2>🏪 فروشگاه کارت‌ها</h2>
-<p class="small">برای به‌دست‌آوردن کارت‌های جدید، باید به سؤال ویژه پاسخ صحیح بدهی.</p>
-<div class="cards" id="shop"></div>
-</div>
-
-<div class="panel">
-<h2>🏆 جدول لیگ‌ها</h2>
-<div id="leagues"></div>
-</div>
-
-<div class="panel">
-<h2>📜 راهنمای بازی</h2>
-<p class="small">
-هر پیروزی کاپ و سکه می‌دهد. با افزایش کاپ، لیگ تو تغییر می‌کند.
-سربازها را تا سطح ۶۰ ارتقا بده و ارتش قدرتمندی بساز.
-</p>
-<button class="red" onclick="resetGame()">شروع دوباره بازی</button>
-</div>
+<h3>🃏 کارت‌های سرباز</h3>
+<div class="cards" id="cards"></div>
+<button class="action" onclick="startBattle()">⚔️ شروع نبرد جدید</button>
 
 <script>
-const initialCards=[
- {id:1,name:"سرباز",emoji:"⚔️",level:1,owned:true,cost:0},
- {id:2,name:"کماندار",emoji:"🏹",level:1,owned:true,cost:0},
- {id:3,name:"شوالیه",emoji:"🛡️",level:1,owned:false,cost:150},
- {id:4,name:"غول",emoji:"👹",level:1,owned:false,cost:250},
- {id:5,name:"جادوگر",emoji:"🧙",level:1,owned:false,cost:350},
- {id:6,name:"اژدها",emoji:"🐉",level:1,owned:false,cost:500},
- {id:7,name:"فرمانده",emoji:"👑",level:1,owned:false,cost:700},
- {id:8,name:"نیزه‌دار",emoji:"🔱",level:1,owned:false,cost:200}
+const names=[
+"شمشیرزن","کماندار","نیزه‌دار","تبرزن","سپر‌دار",
+"سواره‌نظام","فیل جنگی","فیل‌سوار","کماندار سنگین","شمشیرزن طلایی",
+"نگهبان","فرمانده","جاسوس","کماندار آتشین","نیزه‌دار سلطنتی",
+"غول جنگی","جنگجوی کوهستان","تیرانداز","سرباز زرهی","دژکوب",
+"شوالیه","سوارکار سریع","کماندار سلطنتی","تبرزن سنگین","محافظ شاه",
+"جنگجوی صحرا","جنگجوی یخی","جنگجوی آتشین","غول سنگی","غول آهنی",
+"شمشیرزن افسانه‌ای","شاهزاده","سردار بزرگ","فیل سلطنتی","کماندار افسانه‌ای",
+"نیزه‌دار افسانه‌ای","محافظ طلایی","شکارچی","جنگجوی شب","جنگجوی اژدها",
+"اژدها","اژدهای آتشین","جادوگر","جادوگر یخی","جادوگر آتش",
+"شبح جنگی","هیولای سنگی","تایتان","امپراتور","فرمانده افسانه‌ای",
+"نگهبان اژدها","شوالیه سیاه","شوالیه طلایی","ققنوس","غول آتشین",
+"اژدهای سلطنتی","پادشاه جنگ","قهرمان باستانی","خدای جنگ","اسطوره"
 ];
-
-let saved=localStorage.getItem("nobatNokhbegan");
-let game=saved?JSON.parse(saved):{
- coins:500,cups:0,wins:0,losses:0,
- commander:1,cards:initialCards
-};
-
-function save(){
- localStorage.setItem("nobatNokhbegan",JSON.stringify(game));
- render();
+const icons=["⚔️","🏹","🔱","🪓","🛡️","🐎","🐘","🐘","🎯","🗡️","💂","👑","🥷","🔥","🔱","🗿","⛰️","🏹","🪖","🏰","🤺","🐴","🏹","🪓","👑","⚔️","❄️","🔥","🗿","🤖","🗡️","🤴","🎖️","🐘","🏹","🔱","🛡️","🦅","🌑","🐉","🐲","🐉","🧙","❄️","🔥","👻","🗿","🦾","👑","🌟","🐲","⚫","🟡","🔥","🌋","🐉","👑","⚡","⚔️","🏆"];
+let level=1,xp=0,cups=0,coins=500,elixir=5;
+let enemyHP=100,playerHP=100,busy=false;
+let owned=[0,1,2,3,4,5,6,7];
+let selected=0;
+function update(){
+document.getElementById("level").textContent=level;
+document.getElementById("xp").textContent=xp;
+document.getElementById("cups").textContent=cups;
+document.getElementById("coins").textContent=coins;
+document.getElementById("elixir").textContent=elixir;
+document.getElementById("enemyhp").style.width=enemyHP+"%";
+document.getElementById("enemyhp2").style.width=enemyHP+"%";
+document.getElementById("mainhp").style.width=playerHP+"%";
+document.getElementById("energy").style.width=elixir*10+"%";
 }
-
-function leagueName(){
- if(game.cups>=2000)return "افسانه‌ای";
- if(game.cups>=1200)return "الماس";
- if(game.cups>=700)return "طلایی";
- if(game.cups>=300)return "نقره‌ای";
- return "برنز";
-}
-
 function render(){
- document.getElementById("coins").textContent=game.coins;
- document.getElementById("cups").textContent=game.cups;
- document.getElementById("league").textContent=leagueName();
- document.getElementById("wins").textContent=game.wins;
- document.getElementById("losses").textContent=game.losses;
- document.getElementById("commander").textContent=game.commander;
-
- let army=document.getElementById("army");
- army.innerHTML="";
-
- game.cards.filter(c=>c.owned).forEach(c=>{
- let cost=c.level*25;
- army.innerHTML+=`
- <div class="card">
- <div style="font-size:35px">${c.emoji}</div>
- <strong>${c.name}</strong>
- <p>سطح ${c.level} از ۶۰</p>
- <p class="small">قدرت: ${c.level*10}</p>
- <button class="gold" ${c.level>=60||game.coins<cost?"disabled":""}
- onclick="upgrade(${c.id})">
- ارتقا ${cost} 🪙
- </button>
- </div>`;
- });
-
- let shop=document.getElementById("shop");
- shop.innerHTML="";
- game.cards.filter(c=>!c.owned).forEach(c=>{
- shop.innerHTML+=`
- <div class="card">
- <div style="font-size:35px">${c.emoji}</div>
- <strong>${c.name}</strong>
- <p>${c.cost} سکه</p>
- <button onclick="question(${c.id})">باز کردن کارت</button>
- </div>`;
- });
-
- document.getElementById("leagues").innerHTML=
- `🥉 برنز: ۰ کاپ<br>
- 🥈 نقره‌ای: ۳۰۰ کاپ<br>
- 🥇 طلایی: ۷۰۰ کاپ<br>
- 💎 الماس: ۱۲۰۰ کاپ<br>
- 👑 افسانه‌ای: ۲۰۰۰ کاپ`;
+let c=document.getElementById("cards");c.innerHTML="";
+owned.forEach(i=>{
+let b=document.createElement("button");
+b.className="card";
+b.innerHTML=icons[i]+"<br>"+names[i]+"<br>💧"+(3+i%5);
+b.onclick=()=>deploy(i);c.appendChild(b);
+});
 }
-
-function upgrade(id){
- let c=game.cards.find(x=>x.id===id);
- let cost=c.level*25;
- if(c.level>=60||game.coins<cost)return;
- game.coins-=cost;
- c.level++;
- save();
- document.getElementById("message").textContent=
- "🎉 سرباز با موفقیت ارتقا یافت!";
+function gainXP(n){
+xp+=n;
+while(xp>=level*100&&level<60){
+xp-=level*100;level++;
+coins+=100;
+document.getElementById("log").textContent="🎉 سطح جدید! سطح "+level;
 }
-
-function question(id){
- let c=game.cards.find(x=>x.id===id);
- let questions=[
- {q:"حاصل ۱۲ × ۸ چیست؟",a:["۹۶","۸۶","۱۰۶"],correct:0},
- {q:"کدام عدد اول است؟",a:["۹","۱۳","۲۱"],correct:1},
- {q:"حاصل ۱۵۰ ÷ ۵ چیست؟",a:["۲۰","۲۵","۳۰"],correct:2},
- {q:"مجموع زاویه‌های مثلث چند درجه است؟",a:["۱۸۰","۹۰","۳۶۰"],correct:0},
- {q:"کدام سیاره به خورشید نزدیک‌تر است؟",a:["زمین","عطارد","مریخ"],correct:1},
- {q:"حاصل ۷ به توان ۲ چیست؟",a:["۱۴","۴۹","۲۸"],correct:1},
- {q:"کدام کسر بزرگ‌تر است؟",a:["۱/۲","۱/۳","۱/۴"],correct:0},
- {q:"عدد بعدی دنباله ۲، ۴، ۸، ۱۶ چیست؟",a:["۲۰","۲۴","۳۲"],correct:2}
- ];
- let q=questions[Math.floor(Math.random()*questions.length)];
- let answer=prompt(q.q+"\n"+
- q.a.map((a,i)=>(i+1)+") "+a).join("\n")+
- "\nشماره گزینه درست را وارد کن:");
- if(answer===null)return;
- if(Number(answer)-1===q.correct){
- c.owned=true;
- game.coins+=100;
- save();
- alert("🎉 آفرین! کارت "+c.name+" آزاد شد و ۱۰۰ سکه گرفتی!");
- }else{
- alert("❌ پاسخ اشتباه بود! دوباره تلاش کن.");
- }
+update();
 }
-
-function battle(){
- let power=game.cards.filter(c=>c.owned)
- .reduce((sum,c)=>sum+c.level*10,0);
- let result=Math.random()<Math.min(.85,.50+power/1000);
-
- if(result){
- game.wins++;
- game.cups+=25;
- game.coins+=100;
- game.commander=Math.floor(game.wins/5)+1;
- document.getElementById("message").textContent=
- "🏆 پیروز شدی! ۲۵ کاپ و ۱۰۰ سکه دریافت کردی!";
- }else{
- game.losses++;
- game.cups=Math.max(0,game.cups-10);
- game.coins+=20;
- document.getElementById("message").textContent=
- "💥 این نبرد را باختی! ۱۰ کاپ از دست دادی ولی ۲۰ سکه گرفتی.";
- }
- save();
+function deploy(i){
+let cost=3+i%5;
+if(busy){return;}
+if(elixir<cost){
+document.getElementById("log").textContent="اکسیر کافی نیست!";
+return;
 }
-
-function resetGame(){
- if(!confirm("تمام پیشرفت‌ها پاک شود؟"))return;
- localStorage.removeItem("nobatNokhbegan");
- location.reload();
+elixir-=cost;
+let u=document.createElement("span");
+u.className="unit";
+u.textContent=icons[i];
+document.getElementById("units").appendChild(u);
+document.getElementById("log").textContent=names[i]+" وارد میدان شد!";
+update();
+setTimeout(()=>{
+if(!busy)return;
+let damage=8+(i%10)*2;
+enemyHP=Math.max(0,enemyHP-damage);
+u.remove();
+if(enemyHP===0)win();
+update();
+},1800);
 }
-
-render();
+function startBattle(){
+busy=true;enemyHP=100;playerHP=100;elixir=5;
+document.getElementById("units").innerHTML="";
+document.getElementById("log").textContent="⚔️ نبرد آغاز شد!";
+update();
+let t=setInterval(()=>{
+if(!busy){clearInterval(t);return;}
+elixir=Math.min(10,elixir+1);
+if(Math.random()<.35){
+playerHP=Math.max(0,playerHP-8);
+if(playerHP===0){
+busy=false;cups=Math.max(0,cups-10);
+document.getElementById("log").textContent="💀 شکست خوردی!";
+clearInterval(t);
+}
+}
+update();
+},3000);
+}
+function win(){
+busy=false;cups+=30;coins+=150;gainXP(50);
+document.getElementById("log").textContent="🏆 پیروزی! +۳۰ کاپ و ۱۵۰ سکه";
+update();
+}
+render();update();
 </script>
 </body>
 </html>
