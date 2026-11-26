@@ -49,13 +49,22 @@ button{cursor:pointer;font-family:tahoma}
 .hero-name{font-weight:bold;color:#ffe28a}
 .elixir{background:#42245f;border-radius:20px;height:20px;margin:5px 15px;overflow:hidden}
 #energy{height:100%;width:50%;background:#d64bff}
-#log{color:#ffe28a;min-height:30px;padding:7px}
+#log{color:#ffe28a;min-height:35px;padding:7px}
 .ariobarzan{position:absolute;z-index:8;width:65px;text-align:center;font-size:36px;filter:drop-shadow(0 0 6px gold);animation:heroWalk .5s infinite alternate}
 .ariobarzan .body{display:block;background:linear-gradient(140deg,#8c3e29,#d5a52d);border:2px solid #ffe28a;border-radius:13px;padding:4px}
 .ariobarzan small{display:block;font-size:10px;background:#542477;border:1px solid gold;border-radius:5px;padding:3px}
 @keyframes heroWalk{from{transform:translateY(0) rotate(-4deg)}to{transform:translateY(-8px) rotate(4deg)}}
 .ariobarzan.attack .body{animation:sword .45s ease}
 @keyframes sword{0%{transform:rotate(0) scale(1)}40%{transform:rotate(-30deg) scale(1.25)}70%{transform:rotate(30deg) scale(1.2)}100%{transform:rotate(0) scale(1)}}
+.special-panel{margin:12px 8px;padding:12px;background:#192c46;border:2px solid #c69a4d;border-radius:14px}
+.special-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.special-btn{background:linear-gradient(145deg,#344d70,#202d48);border:2px solid #c69a4d;color:white;border-radius:12px;padding:10px 5px;min-height:85px}
+.special-btn strong{display:block;color:#ffdf85;font-size:13px;margin:5px 0}
+.special-btn small{display:block;color:#c8d6e8;font-size:10px}
+.special-btn:disabled{opacity:.45;filter:grayscale(.8)}
+.special-btn.ready{box-shadow:0 0 9px #e6bd5c}
+#battleEffect{min-height:28px;color:#ffe28a;font-size:13px;padding:5px}
+.shielded{box-shadow:inset 0 0 35px #4ed9ff!important}
 </style>
 </head>
 <body>
@@ -82,7 +91,7 @@ button{cursor:pointer;font-family:tahoma}
 <div class="home-card">
 <h3>🃏 ارتش من</h3>
 <p>۶۰ سرباز و قهرمان در انتظار تو هستند!</p>
-<button class="action" onclick="showCollection()">مشاهده سربازها</button>
+<button class="action" onclick="showCollection()">مشاهده سربازها و قهرمانان</button>
 </div>
 </section>
 
@@ -93,7 +102,7 @@ button{cursor:pointer;font-family:tahoma}
 <span>🔵 تو: <b id="playerHPText">1000</b></span>
 </div>
 
-<div class="arena">
+<div class="arena" id="arena">
 <div class="lane one"></div>
 <div class="lane two"></div>
 
@@ -134,11 +143,19 @@ button{cursor:pointer;font-family:tahoma}
 </div>
 
 <div id="log">سپاه آماده نبرد است!</div>
+<div id="battleEffect"></div>
 <div>💧 اکسیر: <b id="elixir">5</b> / 10</div>
 <div class="elixir"><div id="energy"></div></div>
 
 <h3>🃏 کارت‌های جنگی</h3>
 <div class="cards" id="cards"></div>
+
+<div class="special-panel">
+<h3>👑 قدرت ویژه قهرمانان</h3>
+<p style="font-size:11px;color:#c9d8e9">برای اجرای قدرت، روی قهرمان موردنظر بزن!</p>
+<div class="special-grid" id="specialHeroes"></div>
+</div>
+
 <button class="action" onclick="leaveBattle()">بازگشت به خانه</button>
 </section>
 
@@ -173,10 +190,23 @@ const icons=[
 "🐲","⚫","🟡","🔥","🌋","🐉","👑","⚡","⚔️","🏆"
 ];
 
+const heroes=[
+{id:"cyrus",name:"کوروش بزرگ",icon:"👑",power:"خشم شاهنشاه",desc:"نابودی تمام نیروهای دشمن",cooldown:180},
+{id:"ari",name:"آریوبرزن",icon:"🛡️",power:"آخرین سنگر",desc:"سپر دفاعی و مقاومت سپاه",cooldown:45},
+{id:"rostam",name:"رستم",icon:"🔨",power:"گرز سام",desc:"ضربه سنگین به دشمنان",cooldown:55},
+{id:"esf",name:"اسفندیار",icon:"🛡️",power:"زره رویین",desc:"مقاومت بسیار زیاد در برابر حمله",cooldown:65},
+{id:"sohrab",name:"سهراب",icon:"⚔️",power:"یورش پهلوان",desc:"یورش قدرتمند به سپاه دشمن",cooldown:50},
+{id:"zal",name:"زال",icon:"🦅",power:"فرمان سیمرغ",desc:"درمان و ترمیم نیروی خودی",cooldown:70},
+{id:"bahram",name:"بهرام",icon:"🏹",power:"باران تیر",desc:"بارش تیر بر سپاه دشمن",cooldown:60}
+];
+
 let level=1,xp=0,cups=0,coins=500,elixir=5;
 let enemyHP=1000,playerHP=1000;
 let active=false,seconds=120;
 let battleTimer=null,aiTimer=null;
+let shieldUntil=0,armorUntil=0;
+let cooldowns={};
+
 let owned=[0,1,2,3,4,5,6,11];
 
 function show(id){
@@ -190,6 +220,9 @@ function showCollection(){
  let html="";
  names.forEach((n,i)=>{
    html+=`<div>${i===11?'<div class="hero-poster"><span class="warrior">🛡️⚔️</span></div>':icons[i]}<br>${n}<br>سطح ${Math.min(60,Math.max(1,level))}</div>`;
+ });
+ heroes.forEach(h=>{
+   html+=`<div class="hero-card"><div class="hero-poster"><span class="warrior">${h.icon}</span></div><b>${h.name}</b><br>${h.power}<br>سطح ${level}</div>`;
  });
  document.getElementById("soldiers").innerHTML=html;
 }
@@ -229,6 +262,20 @@ function renderCards(){
  });
 }
 
+function renderHeroButtons(){
+ const box=document.getElementById("specialHeroes");
+ box.innerHTML="";
+ heroes.forEach(h=>{
+   const left=cooldowns[h.id]||0;
+   const btn=document.createElement("button");
+   btn.className="special-btn"+(left===0?" ready":"");
+   btn.disabled=!active||left>0;
+   btn.innerHTML=`<span style="font-size:23px">${h.icon}</span><strong>${h.name}</strong><span>${h.power}</span><small>${left>0?"شارژ: "+left+" ثانیه":"آماده استفاده!"}</small>`;
+   btn.onclick=()=>useHeroPower(h.id);
+   box.appendChild(btn);
+ });
+}
+
 function gainXP(n){
  xp+=n;
  while(xp>=level*100&&level<60){
@@ -247,9 +294,15 @@ function startBattle(){
  playerHP=1000;
  elixir=5;
  seconds=120;
+ shieldUntil=0;
+ armorUntil=0;
+ cooldowns={};
  document.getElementById("battleUnits").innerHTML="";
+ document.getElementById("battleEffect").textContent="";
+ document.getElementById("arena").classList.remove("shielded");
  document.getElementById("log").textContent="⚔️ نبرد آغاز شد!";
  renderCards();
+ renderHeroButtons();
  update();
  clearInterval(battleTimer);
  clearInterval(aiTimer);
@@ -258,19 +311,36 @@ function startBattle(){
    if(!active)return;
    elixir=Math.min(10,elixir+1);
    seconds--;
+
+   Object.keys(cooldowns).forEach(id=>{
+     cooldowns[id]=Math.max(0,cooldowns[id]-1);
+   });
+
    document.getElementById("timer").textContent=
    Math.floor(seconds/60)+":"+String(seconds%60).padStart(2,"0");
+
    if(seconds<=0)finish(playerHP>enemyHP);
    renderCards();
+   renderHeroButtons();
    update();
  },1000);
 
  aiTimer=setInterval(()=>{
    if(!active)return;
-   let damage=15+Math.floor(Math.random()*20);
-   playerHP=Math.max(0,playerHP-damage);
+   if(Date.now()<shieldUntil){
+     document.getElementById("log").textContent="🛡️ سپر آریوبرزن حمله دشمن را دفع کرد!";
+     return;
+   }
+   if(Date.now()<armorUntil){
+     let damage=5;
+     playerHP=Math.max(0,playerHP-damage);
+     document.getElementById("log").textContent="🛡️ زره رویین اسفندیار بیشتر آسیب را دفع کرد!";
+   }else{
+     let damage=15+Math.floor(Math.random()*20);
+     playerHP=Math.max(0,playerHP-damage);
+     document.getElementById("log").textContent="🔴 دشمن حمله کرد!";
+   }
    spawnUnit(false);
-   document.getElementById("log").textContent="🔴 دشمن حمله کرد!";
    update();
    if(playerHP<=0)finish(false);
  },6500);
@@ -290,6 +360,77 @@ function deploy(i){
  document.getElementById("log").textContent=names[i]+" به سپاه دشمن حمله کرد!";
  renderCards();
  update();
+ if(enemyHP<=0)finish(true);
+}
+
+function useHeroPower(id){
+ if(!active)return;
+ const h=heroes.find(x=>x.id===id);
+ if(!h)return;
+ if((cooldowns[id]||0)>0)return;
+
+ const bonus=Math.floor(level*2);
+ const effect=document.getElementById("battleEffect");
+
+ if(id==="cyrus"){
+   document.querySelectorAll(".enemyUnit").forEach(u=>u.remove());
+   enemyHP=Math.max(0,enemyHP-(300+bonus*5));
+   effect.textContent="👑 خشم شاهنشاه! تمام نیروهای دشمن نابود شدند!";
+   document.getElementById("log").textContent="⚡ فرمان کوروش بزرگ اجرا شد!";
+ }
+
+ if(id==="ari"){
+   shieldUntil=Date.now()+8000;
+   document.getElementById("arena").classList.add("shielded");
+   effect.textContent="🛡️ آخرین سنگر! سپر آریوبرزن فعال شد؛ ۸ ثانیه دفاع کامل!";
+   setTimeout(()=>{
+     if(Date.now()>=shieldUntil){
+       document.getElementById("arena").classList.remove("shielded");
+     }
+   },8100);
+ }
+
+ if(id==="rostam"){
+   const damage=220+bonus*5;
+   enemyHP=Math.max(0,enemyHP-damage);
+   document.querySelectorAll(".enemyUnit").forEach(u=>{
+     u.style.transform="translateY(-25px) scale(1.4)";
+     setTimeout(()=>u.remove(),350);
+   });
+   effect.textContent="🔨 گرز سام! رستم زمین را شکافت و "+damage+" آسیب وارد کرد!";
+ }
+
+ if(id==="esf"){
+   armorUntil=Date.now()+12000;
+   effect.textContent="🛡️ زره رویین فعال شد! تا ۱۲ ثانیه آسیب حملات دشمن بسیار کم می‌شود.";
+ }
+
+ if(id==="sohrab"){
+   const damage=260+bonus*6;
+   enemyHP=Math.max(0,enemyHP-damage);
+   effect.textContent="⚔️ یورش پهلوان! سهراب با قدرت به دشمن هجوم برد؛ "+damage+" آسیب!";
+   spawnUnit(true,11);
+ }
+
+ if(id==="zal"){
+   const heal=250+bonus*5;
+   playerHP=Math.min(1000,playerHP+heal);
+   effect.textContent="🦅 سیمرغ فرود آمد! "+heal+" واحد از سلامتی سپاه بازگشت.";
+ }
+
+ if(id==="bahram"){
+   const damage=200+bonus*5;
+   enemyHP=Math.max(0,enemyHP-damage);
+   document.querySelectorAll(".enemyUnit").forEach(u=>{
+     u.style.filter="drop-shadow(0 0 12px orange)";
+   });
+   effect.textContent="🏹 باران تیر! تیرهای بهرام بر سپاه دشمن فرود آمد؛ "+damage+" آسیب!";
+ }
+
+ cooldowns[id]=h.cooldown;
+ renderHeroButtons();
+ update();
+
  if(enemyHP<=0)finish(true);
 }
 
@@ -346,6 +487,7 @@ function finish(win){
    document.getElementById("log").textContent="💀 شکست خوردی! دوباره تلاش کن.";
  }
  renderCards();
+ renderHeroButtons();
  update();
 }
 
@@ -357,6 +499,7 @@ function leaveBattle(){
 }
 
 renderCards();
+renderHeroButtons();
 update();
 </script>
 </body>
