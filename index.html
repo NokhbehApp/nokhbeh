@@ -371,4 +371,165 @@ function celebrate(){
 updateGrade();
 </script>
 </body>
-</html>
+ 
+<style>
+.math7-card {
+  background:linear-gradient(135deg,#102b49,#07182c);
+  border:1px solid #18c9c0;
+  border-radius:18px;
+  padding:18px;
+  margin:15px 0;
+  color:#eafcff;
+  direction:rtl;
+  font-family:inherit;
+}
+.math7-card h2,.math7-card h3 {color:#20d6ce}
+.math7-card button {
+  background:#12aaa8;color:white;border:0;
+  border-radius:10px;padding:11px 16px;
+  margin:5px;font-weight:bold;cursor:pointer;
+}
+.math7-card .gold {color:#f5c45b}
+.math7-card .lesson-content {
+  line-height:2.1;font-size:15px;
+}
+.math7-card .math-question {
+  background:#173b59;padding:14px;
+  border-radius:12px;margin:12px 0;
+}
+.math7-card .answer {
+  display:block;width:100%;text-align:right;
+  background:#214766;
+}
+.math7-card .answer:active {background:#087e80}
+.math7-card .result {color:#ffd166;font-weight:bold}
+</style>
+
+<div id="math7-entry" class="math7-card">
+  <h2>📐 ریاضی هفتم</h2>
+  <h3>فصل اول: راهبردهای حل مسئله</h3>
+  <p>با یادگیری روش‌های حل مسئله، قدرت تفکر و استدلالت را تقویت کن.</p>
+  <button onclick="math7Open()">شروع آموزش فصل اول</button>
+</div>
+
+<div id="math7-page" class="math7-card" style="display:none">
+  <button onclick="math7Close()">⬅ بازگشت</button>
+  <h2>آموزش فصل اول</h2>
+  <div id="math7-content" class="lesson-content"></div>
+  <div id="math7-quiz"></div>
+</div>
+
+<script>
+const math7Lessons = [
+{
+title:"۱. راهبرد رسم شکل",
+body:"گاهی برای حل یک مسئله، کشیدن شکل به ما کمک می‌کند اطلاعات مسئله را بهتر ببینیم. شکل می‌تواند ساده و حتی بدون اندازه دقیق باشد.",
+example:"مثال: علی ۳ جعبه دارد. در هر جعبه ۴ توپ است. برای پیدا کردن تعداد توپ‌ها می‌توانیم سه گروه چهارتایی رسم کنیم: ۴ + ۴ + ۴ = ۱۲ توپ.",
+tip:"نکته: شکل باید اطلاعات مهم مسئله را نشان دهد."
+},
+{
+title:"۲. راهبرد الگوسازی",
+body:"در این روش، با پیدا کردن یک الگو می‌توانیم ادامه دنباله یا پاسخ مسئله را پیدا کنیم.",
+example:"مثال: دنباله ۲، ۵، ۸، ۱۱، ... هر بار ۳ واحد اضافه می‌شود؛ پس عدد بعدی ۱۴ است.",
+tip:"نکته: اختلاف یا رابطه بین عددها را بررسی کن."
+},
+{
+title:"۳. راهبرد حذف حالت‌های نامطلوب",
+body:"گاهی چند پاسخ احتمالی داریم. با بررسی شرط‌های مسئله، پاسخ‌های نادرست را حذف می‌کنیم تا به جواب مناسب برسیم.",
+example:"مثال: عددی بین ۲۰ و ۳۰ است، زوج است و بر ۴ بخش‌پذیر است. حالت‌های ممکن ۲۴ و ۲۸ هستند؛ اگر شرط دیگری عدد را مشخص کند، همان را انتخاب می‌کنیم.",
+tip:"نکته: تمام شرط‌های مسئله را بررسی کن."
+},
+{
+title:"۴. راهبرد الگویابی",
+body:"با بررسی چند حالت ساده‌تر می‌توانیم رابطه پنهان مسئله را کشف کنیم و از آن برای حل حالت اصلی استفاده کنیم.",
+example:"مثال: تعداد چوب‌کبریت‌های مربع‌های جداگانه به ترتیب ۴، ۸، ۱۲ است. برای ۴ مربع جداگانه به ۱۶ چوب‌کبریت نیاز داریم.",
+tip:"نکته: حالت‌های کوچک‌تر را بررسی کن و رابطه را پیدا کن."
+}
+];
+
+let math7Index=0;
+let math7Question=0;
+let math7Score=0;
+
+function math7Open(){
+ document.getElementById("math7-entry").style.display="none";
+ document.getElementById("math7-page").style.display="block";
+ math7ShowLesson();
+}
+
+function math7Close(){
+ document.getElementById("math7-page").style.display="none";
+ document.getElementById("math7-entry").style.display="block";
+}
+
+function math7ShowLesson(){
+ const l=math7Lessons[math7Index];
+ document.getElementById("math7-content").innerHTML=`
+ <h3>${l.title}</h3>
+ <p>${l.body}</p>
+ <div class="math-question">
+ <b class="gold">مثال تشریحی:</b>
+ <p>${l.example}</p>
+ </div>
+ <p class="gold">${l.tip}</p>
+ <button onclick="math7Prev()" ${math7Index===0?"disabled":""}>قبلی</button>
+ <button onclick="math7Next()">${math7Index===3?"رفتن به آزمون":"درس بعدی"}</button>
+ <p>درس ${math7Index+1} از ۴</p>`;
+ document.getElementById("math7-quiz").innerHTML="";
+}
+
+function math7Prev(){
+ if(math7Index>0){math7Index--;math7ShowLesson();}
+}
+
+function math7Next(){
+ if(math7Index<3){math7Index++;math7ShowLesson();}
+ else{math7StartQuiz();}
+}
+
+const math7Questions=[
+{q:"عدد بعدی دنباله ۳، ۶، ۹، ۱۲ چیست؟",a:["۱۳","۱۵","۱۸","۲۰"],c:1,e:"هر بار ۳ واحد اضافه می‌شود."},
+{q:"برای حل مسئله‌ای که اطلاعات مکانی دارد، کدام راهبرد می‌تواند مفید باشد؟",a:["رسم شکل","حدس بی‌دلیل","نادیده گرفتن شرط‌ها","حذف اطلاعات"],c:0,e:"رسم شکل به نمایش اطلاعات کمک می‌کند."},
+{q:"عدد بعدی دنباله ۲، ۴، ۸، ۱۶ چیست؟",a:["۱۸","۲۴","۳۰","۳۲"],c:3,e:"هر عدد دو برابر عدد قبلی است."},
+{q:"در حل مسئله با حذف حالت‌ها چه می‌کنیم؟",a:["همه پاسخ‌ها را قبول می‌کنیم","حالت‌های ناسازگار با شرط‌ها را حذف می‌کنیم","صورت مسئله را عوض می‌کنیم","محاسبه نمی‌کنیم"],c:1,e:"شرط‌های مسئله پاسخ‌های نامناسب را حذف می‌کنند."},
+{q:"تعداد چوب‌کبریت‌های ۵ مربع جداگانه چندتاست؟",a:["۱۵","۱۶","۲۰","۲۵"],c:2,e:"هر مربع ۴ چوب‌کبریت دارد؛ ۵×۴=۲۰."}
+];
+
+function math7StartQuiz(){
+ math7Question=0;math7Score=0;
+ math7RenderQuiz();
+}
+
+function math7RenderQuiz(){
+ const q=math7Questions[math7Question];
+ document.getElementById("math7-content").innerHTML=
+ `<h3>آزمون فصل اول</h3><p>سؤال ${math7Question+1} از ${math7Questions.length}</p>
+ <div class="math-question">${q.q}</div>`;
+ document.getElementById("math7-quiz").innerHTML=
+ q.a.map((a,i)=>`<button class="answer" onclick="math7Answer(${i})">${["الف","ب","ج","د"][i]}) ${a}</button>`).join("");
+}
+
+function math7Answer(i){
+ const q=math7Questions[math7Question];
+ const correct=i===q.c;
+ if(correct)math7Score++;
+ document.getElementById("math7-quiz").innerHTML=
+ `<p class="result">${correct?"آفرین! پاسخ درست بود 🎉":"پاسخ درست نبود."}</p>
+ <p>${q.e}</p>
+ <button onclick="math7Continue()">ادامه</button>`;
+}
+
+function math7Continue(){
+ math7Question++;
+ if(math7Question<math7Questions.length){math7RenderQuiz();}
+ else{
+ document.getElementById("math7-content").innerHTML=
+ `<h2>آزمون تمام شد!</h2>
+ <h3 class="gold">نمره: ${math7Score} از ۵</h3>
+ <p>${math7Score===5?"عالی بود! 🌟": "تمرین کن تا بهتر بشی!"}</p>`;
+ document.getElementById("math7-quiz").innerHTML=
+ `<button onclick="math7StartQuiz()">تکرار آزمون</button>`;
+ }
+}
+  </script>
+ 
