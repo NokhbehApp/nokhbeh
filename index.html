@@ -3,33 +3,52 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>نبرد نخبگان</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#101c30;color:white;font-family:tahoma;text-align:center}
-header{background:#172b46;padding:15px}
+header{background:#172b46;padding:18px}
 h1{color:#ffd36b;margin:5px}
-.stats{display:flex;justify-content:space-around;gap:5px;padding:12px;flex-wrap:wrap}
-.stats span{background:#243c59;padding:10px;border-radius:10px}
-.arena{margin:12px;background:#315e43;border:5px solid #b78b4d;border-radius:15px;padding:12px}
-.towers{display:flex;justify-content:space-around;margin:12px}
-.tower{background:#b68b55;padding:15px 8px;border-radius:10px;width:29%;color:#211608}
-.hp{height:9px;background:#777;border-radius:8px;overflow:hidden;margin-top:8px}
-.hp div{height:100%;background:#37df73;width:100%}
-.bridge{background:#a87943;padding:12px;margin:12px;border-radius:8px}
-#units{min-height:85px;display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
-.unit{font-size:25px;animation:move 1s infinite alternate}
-@keyframes move{to{transform:translateY(-5px)}}
-.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;padding:10px}
-.card{background:#263d5a;border:2px solid #d4aa50;border-radius:10px;padding:10px;color:white}
+button{cursor:pointer;font-family:tahoma}
+.stats{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;padding:12px}
+.stats span{background:#243c59;padding:12px;border-radius:10px}
+.screen{display:none}
+.screen.active{display:block}
+.action{background:#d7a744;color:#241b0b;border:0;padding:14px 22px;border-radius:12px;font-weight:bold;margin:10px}
+.home-card{background:#243c59;border:2px solid #b78b4d;padding:18px;margin:12px;border-radius:15px}
+.collection{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;padding:10px}
+.collection div{background:#263d5a;padding:10px;border-radius:10px;font-size:13px}
+.arena{position:relative;margin:8px auto;width:96%;height:570px;max-width:600px;overflow:hidden;border:5px solid #b78b4d;border-radius:15px;background:linear-gradient(#a94b43 0%,#b66e51 48%,#087bb0 49%,#087bb0 53%,#39764c 54%,#39764c 100%)}
+.side{position:absolute;left:0;right:0;height:46%;display:flex;justify-content:space-around;align-items:center}
+.enemy{top:0}
+.friendly{bottom:0}
+.tower{width:29%;height:105px;background:#b68b55;border:4px solid #73502e;border-radius:12px;color:#24180e;display:flex;flex-direction:column;justify-content:center;align-items:center;font-size:13px}
+.king{width:34%;height:115px;background:#315a91;border-color:#d7a744;color:white}
+.king .face{font-size:35px}
+.tower .face{font-size:29px}
+.health{height:8px;background:#555;width:85%;margin-top:7px;border-radius:8px;overflow:hidden}
+.health div{height:100%;background:#36df70;width:100%}
+.bridge{position:absolute;top:48%;height:4%;left:0;right:0;background:#a87943;border-top:3px solid #e6b66b;border-bottom:3px solid #e6b66b}
+.lane{position:absolute;top:10%;bottom:10%;width:8%;background:#d49a51;opacity:.8}
+.lane.one{left:24%}.lane.two{right:24%}
+#battleUnits{position:absolute;inset:0;pointer-events:none}
+.unit{position:absolute;font-size:30px;animation:walk 1s infinite alternate;z-index:5}
+@keyframes walk{to{transform:translateY(-5px)}}
+.unit.enemyUnit{filter:drop-shadow(0 0 4px red)}
+.unit.friendlyUnit{filter:drop-shadow(0 0 4px blue)}
+.battle-info{display:flex;justify-content:space-around;margin:8px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;padding:8px}
+.card{background:#263d5a;border:2px solid #d4aa50;border-radius:10px;color:white;padding:8px;min-height:85px;font-size:12px}
+.card b{font-size:22px}
 .card:disabled{opacity:.4}
-button{cursor:pointer}
-.action{background:#d7a744;color:#241b0b;padding:12px;border:0;border-radius:10px;font-weight:bold}
-#log{min-height:30px;color:#ffe28a;padding:8px}
+.elixir{background:#42245f;border-radius:20px;height:20px;margin:5px 15px;overflow:hidden}
+#energy{height:100%;width:50%;background:#d64bff}
+#log{color:#ffe28a;min-height:30px;padding:7px}
 </style>
 </head>
 <body>
+
 <header>
 <h1>⚔️ نبرد نخبگان ⚔️</h1>
 <div>امپراتوری خودت را بساز!</div>
@@ -42,122 +61,266 @@ button{cursor:pointer}
 <span>⭐ XP: <b id="xp">0</b></span>
 </div>
 
+<!-- صفحه اصلی -->
+<section id="home" class="screen active">
+<div class="home-card">
+<h2>🏛️ امپراتوری پارس</h2>
+<p>فرماندهی سپاه خودت را به دست بگیر!</p>
+<p>👑 کوروش بزرگ منتظر فرمان توست</p>
+<button class="action" onclick="startBattle()">⚔️ شروع نبرد</button>
+</div>
+
+<div class="home-card">
+<h3>🃏 ارتش من</h3>
+<p>۶۰ سرباز متفاوت در انتظار تو هستند!</p>
+<button class="action" onclick="showCollection()">مشاهده سربازها</button>
+</div>
+</section>
+
+<!-- صفحه نبرد -->
+<section id="battle" class="screen">
+<div class="battle-info">
+<span>🔴 دشمن: <b id="enemyHPText">1000</b></span>
+<span>⏱️ <b id="timer">2:00</b></span>
+<span>🔵 تو: <b id="playerHPText">1000</b></span>
+</div>
+
 <div class="arena">
-<h3>🏰 میدان نبرد</h3>
-<div class="towers">
-<div class="tower">🏰 برج دشمن<div class="hp"><div id="enemyhp"></div></div></div>
-<div class="tower">👑 برج اصلی<div class="hp"><div id="mainhp"></div></div></div>
-<div class="tower">🏰 برج دشمن<div class="hp"><div id="enemyhp2"></div></div></div>
+<div class="lane one"></div>
+<div class="lane two"></div>
+
+<div class="side enemy">
+<div class="tower">
+<div class="face">🏰</div>
+برج دشمن چپ
+<div class="health"><div id="enemyLeftBar"></div></div>
 </div>
-<div class="bridge">🌉 مسیر اول　 |　 🌉 مسیر دوم</div>
-<div id="units"></div>
-<div id="log">برای شروع، سرباز انتخاب کن!</div>
+<div class="tower king">
+<div class="face">👑</div>
+شاه دشمن
+<div class="health"><div id="enemyKingBar"></div></div>
 </div>
+<div class="tower">
+<div class="face">🏰</div>
+برج دشمن راست
+<div class="health"><div id="enemyRightBar"></div></div>
+</div>
+</div>
+
+<div class="bridge"></div>
+
+<div class="side friendly">
+<div class="tower">
+<div class="face">🏹</div>
+آرش کمانگیر
+<div class="health"><div id="playerLeftBar"></div></div>
+</div>
+<div class="tower king">
+<div class="face">👑</div>
+کوروش بزرگ
+<div class="health"><div id="playerKingBar"></div></div>
+</div>
+<div class="tower">
+<div class="face">🏹</div>
+آرش کمانگیر
+<div class="health"><div id="playerRightBar"></div></div>
+</div>
+</div>
+
+<div id="battleUnits"></div>
+</div>
+
+<div id="log">سپاه آماده نبرد است!</div>
 
 <div>💧 اکسیر: <b id="elixir">5</b> / 10</div>
-<div class="hp"><div id="energy" style="width:50%"></div></div>
+<div class="elixir"><div id="energy"></div></div>
 
-<h3>🃏 کارت‌های سرباز</h3>
+<h3>🃏 کارت‌های جنگی</h3>
 <div class="cards" id="cards"></div>
-<button class="action" onclick="startBattle()">⚔️ شروع نبرد جدید</button>
+
+<button class="action" onclick="leaveBattle()">بازگشت به خانه</button>
+</section>
+
+<!-- مجموعه سربازها -->
+<section id="collection" class="screen">
+<h2>🏛️ ارتش امپراتوری</h2>
+<div id="soldiers" class="collection"></div>
+<button class="action" onclick="showHome()">بازگشت</button>
+</section>
 
 <script>
 const names=[
-"شمشیرزن","کماندار","نیزه‌دار","تبرزن","سپر‌دار",
+"شمشیرزن","آرش کمانگیر","نیزه‌دار","تبرزن","سپردار",
 "سواره‌نظام","فیل جنگی","فیل‌سوار","کماندار سنگین","شمشیرزن طلایی",
 "نگهبان","فرمانده","جاسوس","کماندار آتشین","نیزه‌دار سلطنتی",
 "غول جنگی","جنگجوی کوهستان","تیرانداز","سرباز زرهی","دژکوب",
 "شوالیه","سوارکار سریع","کماندار سلطنتی","تبرزن سنگین","محافظ شاه",
 "جنگجوی صحرا","جنگجوی یخی","جنگجوی آتشین","غول سنگی","غول آهنی",
-"شمشیرزن افسانه‌ای","شاهزاده","سردار بزرگ","فیل سلطنتی","کماندار افسانه‌ای",
+"شمشیرزن افسانه‌ای","شاهزاده","سردار بزرگ","فیل سلطنتی","آرش افسانه‌ای",
 "نیزه‌دار افسانه‌ای","محافظ طلایی","شکارچی","جنگجوی شب","جنگجوی اژدها",
 "اژدها","اژدهای آتشین","جادوگر","جادوگر یخی","جادوگر آتش",
 "شبح جنگی","هیولای سنگی","تایتان","امپراتور","فرمانده افسانه‌ای",
 "نگهبان اژدها","شوالیه سیاه","شوالیه طلایی","ققنوس","غول آتشین",
 "اژدهای سلطنتی","پادشاه جنگ","قهرمان باستانی","خدای جنگ","اسطوره"
 ];
-const icons=["⚔️","🏹","🔱","🪓","🛡️","🐎","🐘","🐘","🎯","🗡️","💂","👑","🥷","🔥","🔱","🗿","⛰️","🏹","🪖","🏰","🤺","🐴","🏹","🪓","👑","⚔️","❄️","🔥","🗿","🤖","🗡️","🤴","🎖️","🐘","🏹","🔱","🛡️","🦅","🌑","🐉","🐲","🐉","🧙","❄️","🔥","👻","🗿","🦾","👑","🌟","🐲","⚫","🟡","🔥","🌋","🐉","👑","⚡","⚔️","🏆"];
+
+const icons=[
+"⚔️","🏹","🔱","🪓","🛡️","🐎","🐘","🐘","🎯","🗡️",
+"💂","👑","🥷","🔥","🔱","🗿","⛰️","🏹","🪖","🏰",
+"🤺","🐴","🏹","🪓","👑","⚔️","❄️","🔥","🗿","🤖",
+"🗡️","🤴","🎖️","🐘","🏹","🔱","🛡️","🦅","🌑","🐉",
+"🐲","🐉","🧙","❄️","🔥","👻","🗿","🦾","👑","🌟",
+"🐲","⚫","🟡","🔥","🌋","🐉","👑","⚡","⚔️","🏆"
+];
+
 let level=1,xp=0,cups=0,coins=500,elixir=5;
-let enemyHP=100,playerHP=100,busy=false;
+let enemyHP=1000,playerHP=1000;
+let active=false,seconds=120;
+let battleTimer=null,aiTimer=null;
 let owned=[0,1,2,3,4,5,6,7];
-let selected=0;
+let units=[];
+
+function show(id){
+document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+}
+function showHome(){show("home")}
+function showCollection(){
+show("collection");
+let html="";
+names.forEach((n,i)=>{
+html+=`<div>${icons[i]}<br>${n}<br>سطح ${Math.min(60,Math.max(1,level))}</div>`;
+});
+document.getElementById("soldiers").innerHTML=html;
+}
 function update(){
 document.getElementById("level").textContent=level;
 document.getElementById("xp").textContent=xp;
 document.getElementById("cups").textContent=cups;
 document.getElementById("coins").textContent=coins;
 document.getElementById("elixir").textContent=elixir;
-document.getElementById("enemyhp").style.width=enemyHP+"%";
-document.getElementById("enemyhp2").style.width=enemyHP+"%";
-document.getElementById("mainhp").style.width=playerHP+"%";
-document.getElementById("energy").style.width=elixir*10+"%";
+document.getElementById("energy").style.width=(elixir*10)+"%";
+document.getElementById("enemyHPText").textContent=enemyHP;
+document.getElementById("playerHPText").textContent=playerHP;
+document.getElementById("enemyKingBar").style.width=(enemyHP/10)+"%";
+document.getElementById("enemyLeftBar").style.width=(enemyHP/10)+"%";
+document.getElementById("enemyRightBar").style.width=(enemyHP/10)+"%";
+document.getElementById("playerKingBar").style.width=(playerHP/10)+"%";
+document.getElementById("playerLeftBar").style.width=(playerHP/10)+"%";
+document.getElementById("playerRightBar").style.width=(playerHP/10)+"%";
 }
-function render(){
-let c=document.getElementById("cards");c.innerHTML="";
+function renderCards(){
+let c=document.getElementById("cards");
+c.innerHTML="";
 owned.forEach(i=>{
+let cost=3+i%5;
 let b=document.createElement("button");
 b.className="card";
-b.innerHTML=icons[i]+"<br>"+names[i]+"<br>💧"+(3+i%5);
-b.onclick=()=>deploy(i);c.appendChild(b);
+b.innerHTML=`<b>${icons[i]}</b><br>${names[i]}<br>💧 ${cost}`;
+b.disabled=elixir<cost || !active;
+b.onclick=()=>deploy(i);
+c.appendChild(b);
 });
 }
 function gainXP(n){
 xp+=n;
 while(xp>=level*100&&level<60){
-xp-=level*100;level++;
+xp-=level*100;
+level++;
 coins+=100;
 document.getElementById("log").textContent="🎉 سطح جدید! سطح "+level;
 }
 update();
 }
+function startBattle(){
+show("battle");
+active=true;
+enemyHP=1000;
+playerHP=1000;
+elixir=5;
+seconds=120;
+units.forEach(u=>u.remove());
+units=[];
+document.getElementById("battleUnits").innerHTML="";
+document.getElementById("log").textContent="⚔️ نبرد آغاز شد!";
+renderCards();
+update();
+clearInterval(battleTimer);
+clearInterval(aiTimer);
+
+battleTimer=setInterval(()=>{
+if(!active)return;
+elixir=Math.min(10,elixir+1);
+seconds--;
+document.getElementById("timer").textContent=
+Math.floor(seconds/60)+":"+String(seconds%60).padStart(2,"0");
+if(seconds<=0){
+finish(playerHP>enemyHP);
+}
+renderCards();
+update();
+},1000);
+
+aiTimer=setInterval(()=>{
+if(!active)return;
+let damage=15+Math.floor(Math.random()*20);
+playerHP=Math.max(0,playerHP-damage);
+spawnUnit(false);
+document.getElementById("log").textContent="🔴 دشمن حمله کرد!";
+update();
+if(playerHP<=0)finish(false);
+},6500);
+}
 function deploy(i){
+if(!active)return;
 let cost=3+i%5;
-if(busy){return;}
 if(elixir<cost){
 document.getElementById("log").textContent="اکسیر کافی نیست!";
 return;
 }
 elixir-=cost;
-let u=document.createElement("span");
-u.className="unit";
-u.textContent=icons[i];
-document.getElementById("units").appendChild(u);
-document.getElementById("log").textContent=names[i]+" وارد میدان شد!";
-update();
-setTimeout(()=>{
-if(!busy)return;
-let damage=8+(i%10)*2;
+spawnUnit(true,i);
+let damage=35+(i%10)*12;
 enemyHP=Math.max(0,enemyHP-damage);
-u.remove();
-if(enemyHP===0)win();
+document.getElementById("log").textContent=names[i]+" به سپاه دشمن حمله کرد!";
+renderCards();
 update();
-},1800);
+if(enemyHP<=0)finish(true);
 }
-function startBattle(){
-busy=true;enemyHP=100;playerHP=100;elixir=5;
-document.getElementById("units").innerHTML="";
-document.getElementById("log").textContent="⚔️ نبرد آغاز شد!";
-update();
-let t=setInterval(()=>{
-if(!busy){clearInterval(t);return;}
-elixir=Math.min(10,elixir+1);
-if(Math.random()<.35){
-playerHP=Math.max(0,playerHP-8);
-if(playerHP===0){
-busy=false;cups=Math.max(0,cups-10);
-document.getElementById("log").textContent="💀 شکست خوردی!";
-clearInterval(t);
+function spawnUnit(friend,i=0){
+let u=document.createElement("div");
+u.className="unit "+(friend?"friendlyUnit":"enemyUnit");
+u.textContent=friend?icons[i]:"⚔️";
+u.style.left=(15+Math.random()*70)+"%";
+u.style.top=friend?(65+Math.random()*15)+"%":(15+Math.random()*15)+"%";
+document.getElementById("battleUnits").appendChild(u);
+setTimeout(()=>u.remove(),3000);
 }
-}
-update();
-},3000);
-}
-function win(){
-busy=false;cups+=30;coins+=150;gainXP(50);
+function finish(win){
+if(!active)return;
+active=false;
+clearInterval(battleTimer);
+clearInterval(aiTimer);
+if(win){
+cups+=30;
+coins+=150;
+gainXP(50);
 document.getElementById("log").textContent="🏆 پیروزی! +۳۰ کاپ و ۱۵۰ سکه";
+}else{
+cups=Math.max(0,cups-10);
+document.getElementById("log").textContent="💀 شکست خوردی! دوباره تلاش کن.";
+}
+renderCards();
 update();
 }
-render();update();
+function leaveBattle(){
+active=false;
+clearInterval(battleTimer);
+clearInterval(aiTimer);
+showHome();
+}
+renderCards();
+update();
 </script>
 </body>
 </html>
