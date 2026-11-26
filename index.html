@@ -3,190 +3,372 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>نخبه | ریاضی هفتم</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#07152e">
+<title>نخبه | همراه هوشمند یادگیری</title>
 <style>
+:root{
+ --bg:#07152e;--panel:#102343;--panel2:#142d50;
+ --cyan:#28e0df;--gold:#ffd166;--white:#f3f7ff;
+ --muted:#a9bad2;--green:#38d996;--red:#ff687d;
+}
 *{box-sizing:border-box}
-body{margin:0;background:#071a35;color:white;font-family:Tahoma}
-header{background:#102b50;text-align:center;padding:22px;border-bottom:2px solid #18d6d0}
-header h1{color:#18d6d0;margin:0}
-main{max-width:650px;margin:auto;padding:18px}
-.card{background:#102b50;border:1px solid #1a486c;border-radius:15px;padding:18px;margin:14px 0}
-h2,h3{color:#18d6d0}
-p{line-height:2}
-button{width:100%;padding:14px;margin:7px 0;border:0;border-radius:10px;background:#18d6d0;color:#071a35;font-weight:bold;font-size:15px}
-.back{background:#193b61;color:white}
-.gold{background:#e8bd48}
-.hidden{display:none}
-.answer{background:#193b61;color:white}
-footer{text-align:center;color:#aaa;padding:20px}
+body{
+ margin:0;background:var(--bg);color:var(--white);
+ font-family:Tahoma,Arial,sans-serif;line-height:1.8;
+}
+header{
+ padding:22px 18px;background:linear-gradient(130deg,#102b50,#07152e);
+ border-bottom:1px solid #244366;
+}
+.logo{font-size:29px;font-weight:bold;color:var(--cyan)}
+header p{margin:3px 0;color:var(--muted);font-size:13px}
+main{max-width:850px;margin:auto;padding:17px}
+h2{color:var(--cyan);font-size:19px}
+h3{font-size:16px}
+.panel{
+ background:var(--panel);border:1px solid #244366;
+ border-radius:17px;padding:17px;margin:15px 0;
+}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.tile{
+ background:var(--panel2);border:1px solid #29496c;
+ border-radius:14px;padding:16px;text-align:center;
+}
+.tile b{display:block;color:var(--gold);font-size:16px}
+.tile span{font-size:12px;color:var(--muted)}
+button,select,input{
+ font:inherit;border-radius:10px;padding:11px;
+}
+button{
+ background:var(--cyan);color:#06172b;border:0;
+ font-weight:bold;cursor:pointer;
+}
+button.secondary{background:#203b60;color:white;border:1px solid #416184}
+button.gold{background:var(--gold)}
+button:disabled{opacity:.45;cursor:not-allowed}
+select,input{
+ background:#091a34;color:white;border:1px solid #365475;
+ width:100%;margin:5px 0 12px;
+}
+label{color:var(--muted);font-size:13px}
+nav{
+ display:flex;gap:8px;overflow-x:auto;padding:12px 0;
+}
+nav button{white-space:nowrap;flex-shrink:0}
+.hidden{display:none!important}
+.subject{
+ padding:12px;background:#172f50;border-radius:10px;
+ margin:8px 0;cursor:pointer;border:1px solid #29496c;
+}
+.subject:hover{border-color:var(--cyan)}
+.question{
+ font-size:18px;font-weight:bold;margin:15px 0;
+}
+.option{
+ display:block;width:100%;text-align:right;margin:9px 0;
+ background:#1b365a;color:white;border:1px solid #3b5779;
+}
+.option.selected{border:2px solid var(--cyan);background:#17475a}
+.option.correct{background:#14563f;border-color:var(--green)}
+.option.wrong{background:#5a2637;border-color:var(--red)}
+.muted{color:var(--muted);font-size:13px}
+.stat{color:var(--gold);font-weight:bold}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:1000}
+.progress{height:8px;background:#253b59;border-radius:20px;overflow:hidden}
+.progress div{height:100%;background:var(--cyan);width:0}
+footer{text-align:center;color:var(--muted);padding:25px;font-size:12px}
 </style>
 </head>
 <body>
+<canvas id="confetti"></canvas>
 <header>
-<h1>⭐ نخبه ⭐</h1>
-<p>آموزش هوشمند ریاضی هفتم</p>
+ <div class="logo">✦ نُخبه</div>
+ <p>همراه هوشمند یادگیری و موفقیت تحصیلی</p>
 </header>
 <main>
+ <section id="home">
+  <div class="panel">
+   <h2>به نخبه خوش آمدی!</h2>
+   <p>اینجا قراره با تمرین، یادگیری و رقابت پیشرفت کنی.</p>
+   <label>پایه تحصیلی خودت رو انتخاب کن</label>
+   <select id="grade" onchange="updateGrade()">
+    <option value="7">هفتم</option>
+    <option value="8">هشتم</option>
+    <option value="9">نهم</option>
+   </select>
+   <div class="grid">
+    <div class="tile"><b>۳ پایه</b><span>هفتم تا نهم</span></div>
+    <div class="tile"><b>رایگان</b><span>یادگیری برای همه</span></div>
+   </div>
+  </div>
+  <h2>بخش‌های نخبه</h2>
+  <div class="grid">
+   <div class="tile" onclick="show('lessons')"><b>📚 آموزش درس‌ها</b><span>انتخاب درس و یادگیری</span></div>
+   <div class="tile" onclick="show('exam')"><b>🏆 آزمون حرفه‌ای</b><span>از آسان تا تیزهوشان</span></div>
+   <div class="tile" onclick="show('notes')"><b>📝 جزوه‌ها</b><span>خلاصه و نکته‌های درسی</span></div>
+   <div class="tile" onclick="show('planner')"><b>📅 برنامه‌ریز</b><span>مدیریت زمان مطالعه</span></div>
+   <div class="tile" onclick="show('ranking')"><b>🥇 رتبه‌بندی</b><span>رقابت دانش‌آموزان</span></div>
+   <div class="tile" onclick="show('about')"><b>✨ درباره نخبه</b><span>هدف ما چیست؟</span></div>
+  </div>
+ </section>
 
-<section id="home">
-<div class="card">
-<h2>ریاضی هفتم</h2>
-<p>فصل اول: راهبردهای حل مسئله</p>
-<button onclick="show('lesson')">📘 شروع آموزش درس اول</button>
-<button class="gold" onclick="show('quiz')">📝 آزمون درس اول</button>
-</div>
-</section>
+ <section id="lessons" class="hidden">
+  <button class="secondary" onclick="show('home')">← بازگشت</button>
+  <h2>آموزش درس‌ها</h2>
+  <div class="panel">
+   <p>پایه انتخاب‌شده: <b id="lessonGrade" class="stat">هفتم</b></p>
+   <div id="subjects"></div>
+  </div>
+  <div id="lessonContent" class="panel hidden"></div>
+ </section>
 
-<section id="lesson" class="hidden">
-<div class="card">
-<h2>درس اول: راهبرد رسم شکل</h2>
-<p>گاهی برای حل یک مسئله ریاضی، کشیدن شکل به ما کمک می‌کند اطلاعات مسئله را بهتر درک کنیم.</p>
-<h3>مثال آموزشی</h3>
-<p>علی ۳ سیب دارد و رضا ۲ سیب بیشتر از علی دارد. روی هم چند سیب دارند؟</p>
-<p>تعداد سیب‌های علی: ۳</p>
-<p>تعداد سیب‌های رضا: ۳ + ۲ = ۵</p>
-<p>مجموع: ۳ + ۵ = ۸</p>
-<p>پاسخ: ۸ سیب 🍎</p>
-<h3>نکته مهم</h3>
-<p>در راهبرد رسم شکل، اطلاعات مسئله را به شکل ساده نمایش می‌دهیم تا راه‌حل را پیدا کنیم.</p>
-</div>
-<div class="card">
-<h2>تمرین درس</h2>
-<p>مریم ۴ مداد دارد. سارا ۳ مداد بیشتر از مریم دارد. مجموع مدادهای آن‌ها چندتاست؟</p>
-<button class="answer" onclick="document.getElementById('solution').classList.toggle('hidden')">نمایش پاسخ تشریحی</button>
-<div id="solution" class="hidden">
-<p>مدادهای سارا: ۴ + ۳ = ۷</p>
-<p>مجموع: ۴ + ۷ = ۱۱ مداد</p>
-</div>
-</div>
-<button class="gold" onclick="show('quiz')">رفتن به آزمون</button>
-<button class="back" onclick="show('home')">بازگشت</button>
-</section>
+ <section id="exam" class="hidden">
+  <button class="secondary" onclick="show('home')">← بازگشت</button>
+  <h2>آزمون حرفه‌ای نخبه</h2>
+  <div id="setup" class="panel">
+   <p>آزمونت رو خودت طراحی کن!</p>
+   <label>سطح آزمون</label>
+   <select id="level">
+    <option value="easy">آسان</option>
+    <option value="medium" selected>متوسط</option>
+    <option value="hard">سخت</option>
+    <option value="genius">تیزهوشان</option>
+   </select>
+   <label>تعداد سؤال</label>
+   <select id="count">
+    <option>5</option><option>10</option><option>20</option>
+    <option>30</option><option>50</option><option>100</option>
+   </select>
+   <p class="muted">زمان آزمون: یک دقیقه برای هر سؤال</p>
+   <button onclick="startExam()">شروع آزمون 🚀</button>
+  </div>
+  <div id="quiz" class="panel hidden">
+   <div class="grid">
+    <div>سؤال: <b id="number" class="stat"></b></div>
+    <div>زمان: <b id="timer" class="stat"></b></div>
+   </div>
+   <div class="progress"><div id="bar"></div></div>
+   <div class="question" id="question"></div>
+   <div id="options"></div>
+   <p id="feedback" class="muted"></p>
+   <button id="next" onclick="nextQuestion()" disabled>سؤال بعدی ←</button>
+  </div>
+  <div id="result" class="panel hidden"></div>
+ </section>
 
-<section id="quiz" class="hidden">
-<div class="card">
-<h2>آزمون درس اول</h2>
-<p>سؤال ۱: علی ۵ توپ دارد و رضا ۲ توپ بیشتر دارد. مجموع توپ‌ها چندتاست؟</p>
-<button class="answer" onclick="check(1,7)">۷</button>
-<button class="answer" onclick="check(1,12)">۱۲</button>
-<button class="answer" onclick="check(1,10)">۱۰</button>
-<p id="result1"></p>
-</div>
-<div class="card">
-<p>سؤال ۲: کدام کار به فهم بهتر مسئله کمک می‌کند؟</p>
-<button class="answer" onclick="check(2,1)">رسم شکل</button>
-<button class="answer" onclick="check(2,2)">حدس بی‌دلیل</button>
-<button class="answer" onclick="check(2,3)">نادیده گرفتن اطلاعات</button>
-<p id="result2"></p>
-</div>
-<button class="back" onclick="show('home')">بازگشت به صفحه اصلی</button>
-</section>
+ <section id="notes" class="hidden">
+  <button class="secondary" onclick="show('home')">← بازگشت</button>
+  <h2>جزوه و خلاصه‌ها</h2>
+  <div class="panel">
+   <p>جزوه‌های آموزشی هر پایه در این قسمت قرار می‌گیرند.</p>
+   <p class="muted">بخش محتوای کامل جزوه‌ها در مرحله تولید محتوای آموزشی تکمیل خواهد شد.</p>
+  </div>
+ </section>
 
+ <section id="planner" class="hidden">
+  <button class="secondary" onclick="show('home')">← بازگشت</button>
+  <h2>برنامه‌ریز مطالعه</h2>
+  <div class="panel">
+   <label>نام درس</label>
+   <input id="task" placeholder="مثلاً ریاضی">
+   <label>مدت مطالعه به دقیقه</label>
+   <input id="duration" type="number" min="5" value="30">
+   <button onclick="addTask()">ثبت برنامه</button>
+   <div id="tasks"></div>
+  </div>
+ </section>
+
+ <section id="ranking" class="hidden">
+  <button class="secondary" onclick="show('home')">← بازگشت</button>
+  <h2>جدول رتبه‌بندی</h2>
+  <div class="panel">
+   <p>برای مشاهده و به‌روزرسانی رتبه دانش‌آموزان، اتصال اینترنت لازم است.</p>
+   <p class="muted">زیرساخت رتبه‌بندی آنلاین در مرحله بعد به سرور متصل می‌شود.</p>
+  </div>
+ </section>
+
+ <section id="about" class="hidden">
+  <button class="secondary" onclick="show('home')">← بازگشت</button>
+  <h2>درباره نخبه</h2>
+  <div class="panel">
+   <p>نخبه با هدف فراهم‌کردن آموزش رایگان و باکیفیت برای دانش‌آموزان متوسطه اول ساخته می‌شود.</p>
+   <p>یادگیری، تمرین، آزمون و پیشرفت؛ همه در یک مسیر.</p>
+  </div>
+ </section>
 </main>
-<footer>نخبه | یادگیری برای همه 💙</footer>
+<footer>نخبه | آینده از یادگیری شروع می‌شود 💙</footer>
+
 <script>
+const sections=['home','lessons','exam','notes','planner','ranking','about'];
 function show(id){
- document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'));
+ sections.forEach(s=>document.getElementById(s).classList.add('hidden'));
  document.getElementById(id).classList.remove('hidden');
+ if(id==='lessons') updateGrade();
 }
-
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>نخبه | ریاضی هفتم</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;background:#071a35;color:white;font-family:Tahoma}
-header{background:#102b50;text-align:center;padding:22px;border-bottom:2px solid #18d6d0}
-header h1{color:#18d6d0;margin:0}
-main{max-width:650px;margin:auto;padding:18px}
-.card{background:#102b50;border:1px solid #1a486c;border-radius:15px;padding:18px;margin:14px 0}
-h2,h3{color:#18d6d0}
-p{line-height:2}
-button{width:100%;padding:14px;margin:7px 0;border:0;border-radius:10px;background:#18d6d0;color:#071a35;font-weight:bold;font-size:15px}
-.back{background:#193b61;color:white}
-.gold{background:#e8bd48}
-.hidden{display:none}
-.answer{background:#193b61;color:white}
-footer{text-align:center;color:#aaa;padding:20px}
-</style>
-</head>
-<body>
-<header>
-<h1>⭐ نخبه ⭐</h1>
-<p>آموزش هوشمند ریاضی هفتم</p>
-</header>
-<main>
-
-<section id="home">
-<div class="card">
-<h2>ریاضی هفتم</h2>
-<p>فصل اول: راهبردهای حل مسئله</p>
-<button onclick="show('lesson')">📘 شروع آموزش درس اول</button>
-<button class="gold" onclick="show('quiz')">📝 آزمون درس اول</button>
-</div>
-</section>
-
-<section id="lesson" class="hidden">
-<div class="card">
-<h2>درس اول: راهبرد رسم شکل</h2>
-<p>گاهی برای حل یک مسئله ریاضی، کشیدن شکل به ما کمک می‌کند اطلاعات مسئله را بهتر درک کنیم.</p>
-<h3>مثال آموزشی</h3>
-<p>علی ۳ سیب دارد و رضا ۲ سیب بیشتر از علی دارد. روی هم چند سیب دارند؟</p>
-<p>تعداد سیب‌های علی: ۳</p>
-<p>تعداد سیب‌های رضا: ۳ + ۲ = ۵</p>
-<p>مجموع: ۳ + ۵ = ۸</p>
-<p>پاسخ: ۸ سیب 🍎</p>
-<h3>نکته مهم</h3>
-<p>در راهبرد رسم شکل، اطلاعات مسئله را به شکل ساده نمایش می‌دهیم تا راه‌حل را پیدا کنیم.</p>
-</div>
-<div class="card">
-<h2>تمرین درس</h2>
-<p>مریم ۴ مداد دارد. سارا ۳ مداد بیشتر از مریم دارد. مجموع مدادهای آن‌ها چندتاست؟</p>
-<button class="answer" onclick="document.getElementById('solution').classList.toggle('hidden')">نمایش پاسخ تشریحی</button>
-<div id="solution" class="hidden">
-<p>مدادهای سارا: ۴ + ۳ = ۷</p>
-<p>مجموع: ۴ + ۷ = ۱۱ مداد</p>
-</div>
-</div>
-<button class="gold" onclick="show('quiz')">رفتن به آزمون</button>
-<button class="back" onclick="show('home')">بازگشت</button>
-</section>
-
-<section id="quiz" class="hidden">
-<div class="card">
-<h2>آزمون درس اول</h2>
-<p>سؤال ۱: علی ۵ توپ دارد و رضا ۲ توپ بیشتر دارد. مجموع توپ‌ها چندتاست؟</p>
-<button class="answer" onclick="check(1,7)">۷</button>
-<button class="answer" onclick="check(1,12)">۱۲</button>
-<button class="answer" onclick="check(1,10)">۱۰</button>
-<p id="result1"></p>
-</div>
-<div class="card">
-<p>سؤال ۲: کدام کار به فهم بهتر مسئله کمک می‌کند؟</p>
-<button class="answer" onclick="check(2,1)">رسم شکل</button>
-<button class="answer" onclick="check(2,2)">حدس بی‌دلیل</button>
-<button class="answer" onclick="check(2,3)">نادیده گرفتن اطلاعات</button>
-<p id="result2"></p>
-</div>
-<button class="back" onclick="show('home')">بازگشت به صفحه اصلی</button>
-</section>
-
-</main>
-<footer>نخبه | یادگیری برای همه 💙</footer>
-<script>
-function show(id){
- document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'));
- document.getElementById(id).classList.remove('hidden');
+function updateGrade(){
+ const g=document.getElementById('grade').value;
+ const names={7:'هفتم',8:'هشتم',9:'نهم'};
+ document.getElementById('lessonGrade').innerText=names[g];
+ const subjects=['ریاضی','علوم تجربی','فارسی','عربی','مطالعات اجتماعی','زبان انگلیسی','پیام‌های آسمان'];
+ document.getElementById('subjects').innerHTML=subjects.map(s=>
+ `<div class="subject" onclick="openLesson('${s}')">📘 ${s} <span class="muted">← مشاهده</span></div>`
+ ).join('');
 }
-function check(q,a){
- let correct=(q===1 && a===12)||(q===2 && a===1);
- document.getElementById('result'+q).innerText=correct?'آفرین! پاسخ درست است 🎉':'پاسخ درست نیست؛ دوباره تلاش کن 💙';
+function openLesson(name){
+ const box=document.getElementById('lessonContent');
+ box.classList.remove('hidden');
+ box.innerHTML=`<h3>${name}</h3>
+ <p>بخش آموزش ${name} در حال آماده‌سازی محتوای کامل است.</p>
+ <p class="muted">درس‌ها، مثال‌های حل‌شده، تمرین و ویدیوهای آموزشی به‌مرور به نخبه اضافه می‌شوند.</p>`;
 }
+let questions=[],index=0,answers=[],seconds=0,clock=null,locked=false;
+function makeQuestion(level){
+ let a,b,op,answer,question,explanation;
+ const range=level==='easy'?10:level==='medium'?30:level==='hard'?100:300;
+ a= Math.floor(Math.random()*range)+2;
+ b= Math.floor(Math.random()*range)+2;
+ const type=Math.floor(Math.random()*(level==='genius'?4:3));
+ if(type===0){op='+';answer=a+b;question=`حاصل ${a} + ${b} کدام است؟`}
+ else if(type===1){if(b>a)[a,b]=[b,a];op='−';answer=a-b;question=`حاصل ${a} − ${b} کدام است؟`}
+ else if(type===2){a=Math.min(a,20);b=Math.min(b,20);op='×';answer=a*b;question=`حاصل ${a} × ${b} کدام است؟`}
+ else{
+  b=Math.floor(Math.random()*12)+2;
+  answer=a;
+  a=a*b;
+  question=`اگر ${a} را بر ${b} تقسیم کنیم، حاصل چیست؟`;
+ }
+ explanation=`پاسخ درست ${answer} است. با انجام محاسبه مرحله‌به‌مرحله به این نتیجه می‌رسیم.`;
+ let choices=new Set([answer]);
+ while(choices.size<4){
+  let offset=Math.floor(Math.random()*11)-5;
+  if(offset!==0)choices.add(Math.max(0,answer+offset));
+ }
+ let opts=[...choices].sort(()=>Math.random()-.5);
+ return {question,answer,opts,explanation};
+}
+function startExam(){
+ const count=Number(document.getElementById('count').value);
+ const level=document.getElementById('level').value;
+ questions=Array.from({length:count},()=>makeQuestion(level));
+ index=0;answers=[];seconds=count*60;
+ document.getElementById('setup').classList.add('hidden');
+ document.getElementById('result').classList.add('hidden');
+ document.getElementById('quiz').classList.remove('hidden');
+ clearInterval(clock);
+ clock=setInterval(()=>{
+  seconds--;
+  document.getElementById('timer').innerText=formatTime(seconds);
+  if(seconds<=0)finishExam();
+ },1000);
+ renderQuestion();
+}
+function formatTime(s){
+ return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+}
+function renderQuestion(){
+ locked=false;
+ const q=questions[index];
+ document.getElementById('number').innerText=(index+1)+' از '+questions.length;
+ document.getElementById('timer').innerText=formatTime(seconds);
+ document.getElementById('bar').style.width=((index/questions.length)*100)+'%';
+ document.getElementById('question').innerText=q.question;
+ document.getElementById('feedback').innerText='';
+ document.getElementById('next').disabled=true;
+ document.getElementById('next').innerText=index===questions.length-1?'پایان آزمون':'سؤال بعدی ←';
+ document.getElementById('options').innerHTML=q.opts.map((v,i)=>
+ `<button class="option" onclick="chooseAnswer(${v},this)">${['الف','ب','ج','د'][i]}) ${v}</button>`
+ ).join('');
+}
+function chooseAnswer(value,button){
+ if(locked)return;
+ locked=true;
+ const q=questions[index];
+ const correct=value===q.answer;
+ answers[index]={chosen:value,correct};
+ document.querySelectorAll('.option').forEach(btn=>{
+  const n=Number(btn.innerText.split(') ')[1]);
+  if(n===q.answer)btn.classList.add('correct');
+  else if(btn===button)btn.classList.add('wrong');
+ });
+ document.getElementById('feedback').innerText=
+ correct?'آفرین! پاسخ درست بود 🎉':`پاسخ درست: ${q.answer}`;
+ if(correct)celebrate();
+ document.getElementById('next').disabled=false;
+}
+function nextQuestion(){
+ if(!locked)return;
+ index++;
+ if(index>=questions.length)finishExam();
+ else renderQuestion();
+}
+function finishExam(){
+ clearInterval(clock);
+ const score=answers.filter(a=>a&&a.correct).length;
+ const percent=Math.round(score/questions.length*100);
+ const old=Number(localStorage.getItem('nakhbeBest')||0);
+ if(percent>old)localStorage.setItem('nakhbeBest',percent);
+ document.getElementById('quiz').classList.add('hidden');
+ const result=document.getElementById('result');
+ result.classList.remove('hidden');
+ result.innerHTML=`<h2>آزمون به پایان رسید! 🏆</h2>
+ <p>تعداد سؤال: ${questions.length}</p>
+ <p>پاسخ درست: <b class="stat">${score}</b></p>
+ <p>پاسخ نادرست یا بی‌پاسخ: ${questions.length-score}</p>
+ <h2>نمره: ${percent}٪</h2>
+ <p>بهترین رکورد: ${Math.max(old,percent)}٪</p>
+ <hr>
+ <h3>پاسخ‌های تشریحی</h3>
+ ${questions.map((q,i)=>`<div class="panel">
+ <b>سؤال ${i+1}: ${q.question}</b>
+ <p>پاسخ شما: ${answers[i]?answers[i].chosen:'بدون پاسخ'}</p>
+ <p class="stat">پاسخ صحیح: ${q.answer}</p>
+ <p class="muted">${q.explanation}</p>
+ </div>`).join('')}
+ <button onclick="resetExam()">آزمون جدید</button>
+ <button class="secondary" onclick="show('home')">صفحه اصلی</button>`;
+}
+function resetExam(){
+ document.getElementById('result').classList.add('hidden');
+ document.getElementById('setup').classList.remove('hidden');
+}
+function addTask(){
+ const name=document.getElementById('task').value.trim();
+ const time=Number(document.getElementById('duration').value);
+ if(!name||time<5){alert('نام درس و زمان معتبر وارد کن.');return}
+ const item=document.createElement('div');
+ item.className='subject';
+ item.innerText='📖 '+name+' — '+time+' دقیقه';
+ document.getElementById('tasks').appendChild(item);
+ document.getElementById('task').value='';
+}
+function celebrate(){
+ const canvas=document.getElementById('confetti');
+ const ctx=canvas.getContext('2d');
+ canvas.width=innerWidth;canvas.height=innerHeight;
+ const colors=['#28e0df','#ffd166','#ff687d','#38d996','#a78bfa'];
+ const pieces=Array.from({length:110},()=>({
+  x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height*.4,
+  size:5+Math.random()*7,speed:3+Math.random()*5,
+  drift:Math.random()*4-2,angle:Math.random()*6,
+  color:colors[Math.floor(Math.random()*colors.length)]
+ }));
+ let frame=0;
+ function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  pieces.forEach(p=>{
+   p.y+=p.speed;p.x+=p.drift;p.angle+=.08;
+   ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.angle);
+   ctx.fillStyle=p.color;ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size);
+   ctx.restore();
+  });
+  frame++;
+  if(frame<100)requestAnimationFrame(draw);
+  else ctx.clearRect(0,0,canvas.width,canvas.height);
+ }
+ draw();
+}
+updateGrade();
 </script>
 </body>
 </html>
-
