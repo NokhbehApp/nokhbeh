@@ -58,7 +58,22 @@ button{cursor:pointer;font-family:tahoma}
 .ariobarzan{position:absolute;z-index:8;width:65px;text-align:center;animation:walk .5s infinite alternate}
 .ariobarzan .portrait{height:75px;background:transparent}
 .ariobarzan small{display:block;font-size:10px;background:#542477;border:1px solid gold;border-radius:5px;padding:3px}
-@media(max-width:380px){.cards{gap:4px;padding:4px}.card{font-size:10px}.tower{font-size:10px}}
+.special-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.special-btn.locked{opacity:.62;filter:grayscale(1);border-color:#65748b;box-shadow:none}
+.special-btn.locked .portrait:after{content:"قفل";display:flex;align-items:center;justify-content:center;position:absolute;inset:0;background:#101827a8;color:#fff;font-weight:bold;font-size:18px}
+.special-btn .portrait{position:relative}
+.special-btn .unlock{color:#ffd36b}
+.hero-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:12px}
+.hero-tile{position:relative;border:3px solid #d8a746;border-radius:17px;overflow:hidden;background:#203754;box-shadow:0 0 12px #d5a33c66;min-width:0}
+.hero-art{width:100%;aspect-ratio:1/1;background-image:url('1002.png');background-size:400% 300%;background-repeat:no-repeat;background-position:var(--x) var(--y)}
+.hero-tile.locked .hero-art{filter:grayscale(1) brightness(.35)}
+.hero-tile.locked:after{content:"قفل";position:absolute;top:35%;left:0;right:0;color:white;font-size:24px;font-weight:bold;text-shadow:0 2px 5px #000}
+.hero-caption{padding:9px 5px 12px;background:linear-gradient(#314d70,#1a2b45);font-weight:bold;color:#ffdc83}
+.hero-caption small{display:block;color:#d4dfed;font-weight:normal;margin-top:6px}
+.hero-unlock{font-size:11px;color:#ffd36b!important}
+.card-art{width:100%;aspect-ratio:1/1;background-image:url('1002.png');background-size:400% 300%;background-repeat:no-repeat;background-position:var(--x) var(--y);border-radius:8px}
+.card.locked{filter:grayscale(1);opacity:.45}
+@media(max-width:380px){.cards{gap:4px;padding:4px}.card{font-size:10px}.tower{font-size:10px}.hero-gallery{gap:7px;padding:7px}}
 </style>
 </head>
 <body>
@@ -140,14 +155,17 @@ const names=[
 ];
 
 const heroes=[
-{id:"cyrus",name:"کوروش بزرگ",power:"خشم شاهنشاه",desc:"نابودی نیروهای دشمن",cooldown:180},
-{id:"ari",name:"آریوبرزن",power:"آخرین سنگر",desc:"سپر دفاعی سپاه",cooldown:45},
-{id:"rostam",name:"رستم",power:"گرز سام",desc:"ضربه سنگین به دشمنان",cooldown:55},
-{id:"esf",name:"اسفندیار",power:"زره رویین",desc:"مقاومت در برابر حمله",cooldown:65},
-{id:"sohrab",name:"سهراب",power:"یورش پهلوان",desc:"یورش قدرتمند",cooldown:50},
-{id:"zal",name:"زال",power:"فرمان سیمرغ",desc:"درمان سپاه خودی",cooldown:70},
-{id:"bahram",name:"بهرام",power:"باران تیر",desc:"بارش تیر بر دشمن",cooldown:60}
+{id:"cyrus",name:"کوروش بزرگ",power:"خشم شاهنشاه",desc:"نابودی نیروهای دشمن",cooldown:180,unlock:1,col:1,row:0},
+{id:"arash",name:"آرش کمانگیر",power:"باران تیر",desc:"بارش تیر بر دشمن",cooldown:60,unlock:1,col:3,row:0},
+{id:"ari",name:"آریوبرزن",power:"آخرین سنگر",desc:"سپر دفاعی سپاه",cooldown:45,unlock:30,col:0,row:0},
+{id:"rostam",name:"رستم دستان",power:"گرز سام",desc:"ضربه سنگین به دشمنان",cooldown:55,unlock:35,col:2,row:0},
+{id:"esf",name:"اسفندیار",power:"زره رویین",desc:"مقاومت در برابر حمله",cooldown:65,unlock:40,col:1,row:1},
+{id:"sohrab",name:"سهراب",power:"یورش پهلوان",desc:"یورش قدرتمند",cooldown:50,unlock:50,col:0,row:1},
+{id:"zal",name:"زال",power:"فرمان سیمرغ",desc:"درمان سپاه خودی",cooldown:70,unlock:55,col:3,row:1},
+{id:"bahram",name:"بهرام",power:"باران آذرخش",desc:"قوی‌ترین ضربه ویژه بازی",cooldown:90,unlock:60,col:2,row:1}
 ];
+function heroUnlocked(h){return level>=h.unlock}
+function spriteStyle(h){return `--x:${h.col*100/3}%;--y:${h.row*100/2}%;`}
 
 function portrait(id){
 const p={
@@ -206,15 +224,18 @@ function showCollection(){
  show("collection");
  let html="";
  names.forEach((n,i)=>{
-  html+=`<div>${i===11?`<div class="portrait">${portrait("ari")}</div>`:`<div class="unit-art"></div>`}${n}<br>سطح ${level}</div>`;
+  const h=i===1?heroes[1]:null;
+  html+=`<div>${h?`<div class="card-art" style="${spriteStyle(h)}"></div>`:`<div class="unit-art"></div>`}${n}<br>سطح ${level}</div>`;
  });
- heroes.forEach(h=>{
-  html+=`<div class="hero-card"><div class="portrait">${portrait(h.id)}</div><b>${h.name}</b><br>${h.power}<br>سطح ${level}</div>`;
- });
+ html+=`<div class="hero-gallery">`+heroes.map(h=>{
+  const open=heroUnlocked(h);
+  return `<div class="hero-tile ${open?"":"locked"}"><div class="hero-art" style="${spriteStyle(h)}"></div><div class="hero-caption">${h.name}<small>${h.power}</small>${open?`<small>آزاد شده</small>`:`<small class="hero-unlock">نیازمند سطح ${h.unlock}</small>`}</div></div>`;
+ }).join("")+`</div>`;
  document.getElementById("soldiers").innerHTML=html;
 }
 
 function update(){
+ localStorage.setItem("nokhbeGameSave",JSON.stringify({level,xp,cups,coins}));
  ["level","xp","cups","coins","elixir","enemyHPText","playerHPText"].forEach(id=>{
   document.getElementById(id).textContent=({level,xp,cups,coins,elixir,enemyHPText:enemyHP,playerHPText:playerHP})[id];
  });
@@ -228,7 +249,10 @@ function renderCards(){
  owned.forEach(i=>{
   let cost=3+i%5,b=document.createElement("button");
   b.className="card"+(i===11?" hero-card":"");
-  b.innerHTML=i===11?`<div class="portrait">${portrait("ari")}</div><div class="hero-name">آریوبرزن</div>قهرمان افسانه‌ای<br>اکسیر ${cost}`:`<div class="unit"></div>${names[i]}<br>اکسیر ${cost}`;
+  if(i===1){b.innerHTML=`<div class="card-art" style="${spriteStyle(heroes[1])}"></div>`;}
+  else if(i===11){b.innerHTML=`<div class="card-art" style="${spriteStyle(heroes[2])}"></div>`;}
+  else{b.innerHTML=`<div class="unit"></div>${names[i]}`;}
+  b.innerHTML+=`<div>${names[i]}</div><small>اکسیر ${cost}</small>`;
   b.disabled=elixir<cost||!active;b.onclick=()=>deploy(i);c.appendChild(b);
  });
 }
@@ -236,11 +260,11 @@ function renderCards(){
 function renderHeroButtons(){
  const box=document.getElementById("specialHeroes");box.innerHTML="";
  heroes.forEach(h=>{
-  let left=cooldowns[h.id]||0,btn=document.createElement("button");
-  btn.className="special-btn"+(left===0?" ready":"");
-  btn.disabled=!active||left>0;
-  btn.innerHTML=`<div class="portrait">${portrait(h.id)}</div><strong>${h.name}</strong>${h.power}<small>${left>0?"شارژ: "+left+" ثانیه":"آماده استفاده"}</small>`;
-  btn.onclick=()=>useHeroPower(h.id);box.appendChild(btn);
+  const open=heroUnlocked(h),left=cooldowns[h.id]||0,btn=document.createElement("button");
+  btn.className="special-btn"+(open&&left===0?" ready":"")+(open?"":" locked");
+  btn.disabled=!active||!open||left>0;
+  btn.innerHTML=`<div class="portrait" style="background-image:url('1002.png');background-size:400% 300%;background-position:${h.col*100/3}% ${h.row*100/2}%;background-repeat:no-repeat"></div><strong>${h.name}</strong>${h.power}<small>${open?(left>0?"شارژ: "+left+" ثانیه":"آماده استفاده"):"قفل تا سطح "+h.unlock}</small>`;
+  if(open)btn.onclick=()=>useHeroPower(h.id);box.appendChild(btn);
  });
 }
 
@@ -295,12 +319,17 @@ function deploy(i){
 
 function useHeroPower(id){
  if(!active)return;
- const h=heroes.find(x=>x.id===id);if(!h||(cooldowns[id]||0)>0)return;
+ const h=heroes.find(x=>x.id===id);if(!h||!heroUnlocked(h)||(cooldowns[id]||0)>0)return;
  const bonus=Math.floor(level*2),effect=document.getElementById("battleEffect");
  if(id==="cyrus"){
   document.querySelectorAll(".enemyUnit").forEach(u=>u.remove());
   enemyHP=Math.max(0,enemyHP-(300+bonus*5));
   effect.textContent="خشم شاهنشاه: تمام نیروهای دشمن نابود شدند";
+ }
+ if(id==="arash"){
+  let damage=180+bonus*6;enemyHP=Math.max(0,enemyHP-damage);
+  document.querySelectorAll(".enemyUnit").forEach(u=>{u.style.filter="drop-shadow(0 0 10px #ffd34b)";setTimeout(()=>u.remove(),500)});
+  effect.textContent="باران تیر آرش: "+damage+" آسیب به دشمن وارد شد";
  }
  if(id==="ari"){
   shieldUntil=Date.now()+8000;document.getElementById("arena").classList.add("shielded");
@@ -324,47 +353,4 @@ function useHeroPower(id){
   effect.textContent="فرمان سیمرغ: "+heal+" واحد سلامتی بازیابی شد";
  }
  if(id==="bahram"){
-  let damage=200+bonus*5;enemyHP=Math.max(0,enemyHP-damage);
-  document.querySelectorAll(".enemyUnit").forEach(u=>u.style.filter="drop-shadow(0 0 12px orange)");
-  effect.textContent="باران تیر: "+damage+" آسیب وارد شد";
- }
- cooldowns[id]=h.cooldown;renderHeroButtons();update();if(enemyHP<=0)finish(true);
-}
-
-function spawnUnit(friend,i=0){
- let u=document.createElement("div");
- if(friend&&i===11){
-  u.className="ariobarzan";
-  u.innerHTML=`<div class="portrait">${portrait("ari")}</div><small>آریوبرزن</small>`;
- }else{
-  u.className="unit "+(friend?"friendlyUnit":"enemyUnit");
- }
- u.style.left=(15+Math.random()*65)+"%";
- u.style.top=friend?"76%":"15%";
- document.getElementById("battleUnits").appendChild(u);
- let pos=friend?76:15,step=friend?-1.2:1.2;
- let movement=setInterval(()=>{
-  if(!u.isConnected){clearInterval(movement);return;}
-  pos+=step;u.style.top=pos+"%";
-  if(pos<14||pos>83){clearInterval(movement);u.remove();}
- },100);
-}
-
-function finish(win){
- if(!active)return;active=false;clearInterval(battleTimer);clearInterval(aiTimer);
- if(win){
-  cups+=30;coins+=150;gainXP(50);
-  document.getElementById("log").textContent="پیروزی! ۳۰ کاپ و ۱۵۰ سکه دریافت کردی";
- }else{
-  cups=Math.max(0,cups-10);document.getElementById("log").textContent="شکست خوردی! دوباره تلاش کن";
- }
- renderCards();renderHeroButtons();update();
-}
-function leaveBattle(){
- active=false;clearInterval(battleTimer);clearInterval(aiTimer);showHome();
-}
-document.getElementById("playerKingArt").innerHTML=portrait("cyrus");
-renderCards();renderHeroButtons();update();
-</script>
-</body>
-</html>
+  let damage=650+bonus*12;enemyHP=M
