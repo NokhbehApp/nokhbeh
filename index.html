@@ -3,74 +3,55 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>نبرد نخبگان</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#101c30;color:white;font-family:tahoma;text-align:center}
-header{background:#172b46;padding:16px;border-bottom:3px solid #bd9148}
+header{background:#172b46;padding:18px}
 h1{color:#ffd36b;margin:5px}
 button{cursor:pointer;font-family:tahoma}
-.stats{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;padding:10px}
-.stats span{background:#243c59;padding:10px;border-radius:10px}
-.screen{display:none}.screen.active{display:block}
+.stats{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;padding:12px}
+.stats span{background:#243c59;padding:12px;border-radius:10px}
+.screen{display:none}
+.screen.active{display:block}
 .action{background:#d7a744;color:#241b0b;border:0;padding:14px 22px;border-radius:12px;font-weight:bold;margin:10px}
 .home-card{background:#243c59;border:2px solid #b78b4d;padding:18px;margin:12px;border-radius:15px}
-.collection{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:10px}
+.collection{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;padding:10px}
+.collection div{background:#263d5a;padding:10px;border-radius:10px;font-size:13px}
 .arena{position:relative;margin:8px auto;width:96%;height:570px;max-width:600px;overflow:hidden;border:5px solid #b78b4d;border-radius:15px;background:linear-gradient(#a94b43 0%,#b66e51 48%,#087bb0 49%,#087bb0 53%,#39764c 54%,#39764c 100%)}
 .side{position:absolute;left:0;right:0;height:46%;display:flex;justify-content:space-around;align-items:center}
-.enemy{top:0}.friendly{bottom:0}
-.tower{width:29%;height:105px;background:#b68b55;border:4px solid #73502e;border-radius:12px;color:#24180e;display:flex;flex-direction:column;justify-content:center;align-items:center;font-size:12px}
-.king{width:34%;height:120px;background:linear-gradient(#315a91,#172d55);border-color:#d7a744;color:white}
+.enemy{top:0}
+.friendly{bottom:0}
+.tower{width:29%;height:105px;background:#b68b55;border:4px solid #73502e;border-radius:12px;color:#24180e;display:flex;flex-direction:column;justify-content:center;align-items:center;font-size:13px}
+.king{width:34%;height:115px;background:#315a91;border-color:#d7a744;color:white}
+.king .face{font-size:35px}
+.tower .face{font-size:29px}
 .health{height:8px;background:#555;width:85%;margin-top:7px;border-radius:8px;overflow:hidden}
 .health div{height:100%;background:#36df70;width:100%}
 .bridge{position:absolute;top:48%;height:4%;left:0;right:0;background:#a87943;border-top:3px solid #e6b66b;border-bottom:3px solid #e6b66b}
 .lane{position:absolute;top:10%;bottom:10%;width:8%;background:#d49a51;opacity:.8}
 .lane.one{left:24%}.lane.two{right:24%}
 #battleUnits{position:absolute;inset:0;pointer-events:none}
-.unit{position:absolute;width:35px;height:43px;z-index:5;animation:walk .5s infinite alternate}
-.unit:before{content:"";position:absolute;width:22px;height:22px;border-radius:50%;background:linear-gradient(#e9bd8d,#a96843);left:6px;top:0;border:2px solid #543c2c}
-.unit:after{content:"";position:absolute;left:3px;top:22px;width:28px;height:20px;border-radius:9px 9px 4px 4px;background:linear-gradient(90deg,#b88a3e,#e4c46e,#8b5c28);border:2px solid #543c2c}
-.unit.enemyUnit{filter:drop-shadow(0 0 5px red)}
-.unit.friendlyUnit{filter:drop-shadow(0 0 5px blue)}
-@keyframes walk{to{transform:translateY(-6px)}}
+.unit{position:absolute;font-size:30px;animation:walk 1s infinite alternate;z-index:5}
+@keyframes walk{to{transform:translateY(-5px)}}
+.unit.enemyUnit{filter:drop-shadow(0 0 4px red)}
+.unit.friendlyUnit{filter:drop-shadow(0 0 4px blue)}
+.battle-info{display:flex;justify-content:space-around;margin:8px}
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;padding:8px}
-.card{background:#263d5a;border:2px solid #d4aa50;border-radius:10px;color:white;padding:7px;min-height:125px;font-size:12px;overflow:hidden}
+.card{background:#263d5a;border:2px solid #d4aa50;border-radius:10px;color:white;padding:8px;min-height:85px;font-size:12px}
+.card b{font-size:22px}
 .card:disabled{opacity:.4}
-.portrait{height:100px;width:100%;border-radius:8px;overflow:hidden;background:radial-gradient(circle at 50% 30%,#e9c078,#794534 70%,#251c30);margin-bottom:5px}
-.portrait svg{width:100%;height:100%;display:block}
 .elixir{background:#42245f;border-radius:20px;height:20px;margin:5px 15px;overflow:hidden}
 #energy{height:100%;width:50%;background:#d64bff}
-#log{color:#ffe28a;min-height:35px;padding:7px}
-.special-panel{margin:12px 8px;padding:12px;background:#192c46;border:2px solid #c69a4d;border-radius:14px}
-.special-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.special-btn{position:relative;background:linear-gradient(145deg,#344d70,#202d48);border:2px solid #c69a4d;color:white;border-radius:12px;padding:8px;min-height:145px}
-.special-btn strong{display:block;color:#ffdf85;font-size:13px;margin:5px}
-.special-btn small{display:block;color:#c8d6e8;font-size:10px;margin-top:5px}
-.special-btn:disabled{opacity:.45}
-.special-btn.ready{box-shadow:0 0 9px #e6bd5c}
-.special-btn .portrait{width:75px;height:75px;margin:auto}
-.special-btn.locked{opacity:.55;filter:grayscale(1);border-color:#65748b;box-shadow:none}
-.special-btn.locked .portrait{position:relative}
-.special-btn.locked .portrait:after{content:"قفل";position:absolute;inset:0;background:#101827aa;display:flex;align-items:center;justify-content:center;font-size:20px;color:white;font-weight:bold}
-.unlock{color:#ffd36b!important}
-.hero-tile{border:3px solid #d8a746;border-radius:14px;overflow:hidden;background:#203754}
-.hero-tile.locked{filter:grayscale(1);opacity:.6}
-.hero-tile .portrait{height:130px;border-radius:0}
-.hero-tile .hero-info{padding:10px}
-.hero-tile strong{color:#ffdc83}
-.hero-tile small{display:block;margin-top:6px;color:#d4dfed}
-.shielded{box-shadow:inset 0 0 35px #4ed9ff!important}
-.ariobarzan{position:absolute;z-index:8;width:65px;text-align:center;animation:walk .5s infinite alternate}
-.ariobarzan .portrait{height:75px;background:transparent}
-.ariobarzan small{display:block;font-size:10px;background:#542477;border:1px solid gold;border-radius:5px;padding:3px}
-@media(max-width:380px){.cards{gap:4px;padding:4px}.card{font-size:10px}.tower{font-size:10px}}
+#log{color:#ffe28a;min-height:30px;padding:7px}
 </style>
 </head>
 <body>
+
 <header>
 <h1>نبرد نخبگان</h1>
-<div>امپراتوری خودت را بساز</div>
+<div>امپراتوری خودت را بساز!</div>
 </header>
 
 <div class="stats">
@@ -83,49 +64,78 @@ button{cursor:pointer;font-family:tahoma}
 <section id="home" class="screen active">
 <div class="home-card">
 <h2>امپراتوری پارس</h2>
-<p>فرماندهی سپاه خودت را به دست بگیر</p>
-<p>کوروش بزرگ، پادشاه پارس</p>
+<p>فرماندهی سپاه خودت را به دست بگیر!</p>
+<p>کوروش بزرگ منتظر فرمان توست</p>
 <button class="action" onclick="startBattle()">شروع نبرد</button>
 </div>
+
 <div class="home-card">
 <h3>ارتش من</h3>
-<p>۶۰ سرباز و قهرمان در انتظار تو هستند</p>
-<button class="action" onclick="showCollection()">مشاهده سربازها و قهرمانان</button>
+<p>۶۰ سرباز متفاوت در انتظار تو هستند!</p>
+<button class="action" onclick="showCollection()">مشاهده سربازها</button>
 </div>
 </section>
 
 <section id="battle" class="screen">
-<div>
-دشمن: <b id="enemyHPText">1000</b>
-&nbsp; | &nbsp; <b id="timer">2:00</b> &nbsp; | &nbsp;
-تو: <b id="playerHPText">1000</b>
+<div class="battle-info">
+<span>دشمن: <b id="enemyHPText">1000</b></span>
+<span><b id="timer">2:00</b></span>
+<span>تو: <b id="playerHPText">1000</b></span>
 </div>
-<div class="arena" id="arena">
-<div class="lane one"></div><div class="lane two"></div>
+
+<div class="arena">
+<div class="lane one"></div>
+<div class="lane two"></div>
+
 <div class="side enemy">
-<div class="tower">برج دشمن چپ<div class="health"><div id="enemyLeftBar"></div></div></div>
-<div class="tower king"><div class="portrait" id="enemyKingArt"></div>شاه دشمن<div class="health"><div id="enemyKingBar"></div></div></div>
-<div class="tower">برج دشمن راست<div class="health"><div id="enemyRightBar"></div></div></div>
+<div class="tower">
+<div class="face">برج</div>
+برج دشمن چپ
+<div class="health"><div id="enemyLeftBar"></div></div>
 </div>
+<div class="tower king">
+<div class="face">شاه</div>
+شاه دشمن
+<div class="health"><div id="enemyKingBar"></div></div>
+</div>
+<div class="tower">
+<div class="face">برج</div>
+برج دشمن راست
+<div class="health"><div id="enemyRightBar"></div></div>
+</div>
+</div>
+
 <div class="bridge"></div>
+
 <div class="side friendly">
-<div class="tower">برج آرش<div class="health"><div id="playerLeftBar"></div></div></div>
-<div class="tower king"><div class="portrait" id="playerKingArt"></div><strong>کوروش بزرگ</strong><div class="health"><div id="playerKingBar"></div></div></div>
-<div class="tower">برج آرش<div class="health"><div id="playerRightBar"></div></div></div>
+<div class="tower">
+<div class="face">آرش</div>
+آرش کمانگیر
+<div class="health"><div id="playerLeftBar"></div></div>
 </div>
+<div class="tower king">
+<div class="face">شاه</div>
+کوروش بزرگ
+<div class="health"><div id="playerKingBar"></div></div>
+</div>
+<div class="tower">
+<div class="face">آرش</div>
+آرش کمانگیر
+<div class="health"><div id="playerRightBar"></div></div>
+</div>
+</div>
+
 <div id="battleUnits"></div>
 </div>
-<div id="log">سپاه آماده نبرد است</div>
-<div id="battleEffect"></div>
+
+<div id="log">سپاه آماده نبرد است!</div>
+
 <div>اکسیر: <b id="elixir">5</b> / 10</div>
 <div class="elixir"><div id="energy"></div></div>
+
 <h3>کارت‌های جنگی</h3>
 <div class="cards" id="cards"></div>
-<div class="special-panel">
-<h3>قدرت ویژه قهرمانان</h3>
-<p style="font-size:11px;color:#c9d8e9">قهرمانان با پیشرفت سطح بازیکن آزاد می‌شوند</p>
-<div class="special-grid" id="specialHeroes"></div>
-</div>
+
 <button class="action" onclick="leaveBattle()">بازگشت به خانه</button>
 </section>
 
@@ -137,280 +147,185 @@ button{cursor:pointer;font-family:tahoma}
 
 <script>
 const names=[
-"شمشیرزن","آرش کمانگیر","نیزه‌دار","تبرزن","سپردار","سواره‌نظام","فیل جنگی","فیل‌سوار","کماندار سنگین","شمشیرزن طلایی",
-"نگهبان","آریوبرزن","جاسوس","کماندار آتشین","نیزه‌دار سلطنتی","غول جنگی","جنگجوی کوهستان","تیرانداز","سرباز زرهی","دژکوب",
-"شوالیه","سوارکار سریع","کماندار سلطنتی","تبرزن سنگین","محافظ شاه","جنگجوی صحرا","جنگجوی یخی","جنگجوی آتشین","غول سنگی","غول آهنی",
-"شمشیرزن افسانه‌ای","شاهزاده","سردار بزرگ","فیل سلطنتی","آرش افسانه‌ای","نیزه‌دار افسانه‌ای","محافظ طلایی","شکارچی","جنگجوی شب","جنگجوی اژدها",
-"اژدها","اژدهای آتشین","جادوگر","جادوگر یخی","جادوگر آتش","شبح جنگی","هیولای سنگی","تایتان","امپراتور","فرمانده افسانه‌ای",
-"نگهبان اژدها","شوالیه سیاه","شوالیه طلایی","ققنوس","غول آتشین","اژدهای سلطنتی","پادشاه جنگ","قهرمان باستانی","خدای جنگ","اسطوره"
+"شمشیرزن","آرش کمانگیر","نیزه‌دار","تبرزن","سپردار",
+"سواره‌نظام","فیل جنگی","فیل‌سوار","کماندار سنگین","شمشیرزن طلایی",
+"نگهبان","فرمانده","جاسوس","کماندار آتشین","نیزه‌دار سلطنتی",
+"غول جنگی","جنگجوی کوهستان","تیرانداز","سرباز زرهی","دژکوب",
+"شوالیه","سوارکار سریع","کماندار سلطنتی","تبرزن سنگین","محافظ شاه",
+"جنگجوی صحرا","جنگجوی یخی","جنگجوی آتشین","غول سنگی","غول آهنی",
+"شمشیرزن افسانه‌ای","شاهزاده","سردار بزرگ","فیل سلطنتی","آرش افسانه‌ای",
+"نیزه‌دار افسانه‌ای","محافظ طلایی","شکارچی","جنگجوی شب","جنگجوی اژدها",
+"اژدها","اژدهای آتشین","جادوگر","جادوگر یخی","جادوگر آتش",
+"شبح جنگی","هیولای سنگی","تایتان","امپراتور","فرمانده افسانه‌ای",
+"نگهبان اژدها","شوالیه سیاه","شوالیه طلایی","ققنوس","غول آتشین",
+"اژدهای سلطنتی","پادشاه جنگ","قهرمان باستانی","خدای جنگ","اسطوره"
 ];
 
-const heroes=[
-{id:"cyrus",name:"کوروش بزرگ",power:"خشم شاهنشاه",desc:"نابودی نیروهای دشمن",cooldown:180,unlock:1},
-{id:"arash",name:"آرش کمانگیر",power:"باران تیر",desc:"بارش تیر بر دشمن",cooldown:60,unlock:1},
-{id:"ari",name:"آریوبرزن",power:"آخرین سنگر",desc:"سپر دفاعی سپاه",cooldown:45,unlock:30},
-{id:"rostam",name:"رستم",power:"گرز سام",desc:"ضربه سنگین به دشمنان",cooldown:55,unlock:35},
-{id:"esf",name:"اسفندیار",power:"زره رویین",desc:"مقاومت در برابر حمله",cooldown:65,unlock:40},
-{id:"sohrab",name:"سهراب",power:"یورش پهلوان",desc:"یورش قدرتمند",cooldown:50,unlock:50},
-{id:"zal",name:"زال",power:"فرمان سیمرغ",desc:"درمان سپاه خودی",cooldown:70,unlock:55},
-{id:"bahram",name:"بهرام",power:"باران آذرخش",desc:"قوی‌ترین ضربه ویژه بازی",cooldown:90,unlock:60}
+const icons=[
+"شمشیر","کمان","نیزه","تبر","سپر","اسب","فیل","فیل","کمان","شمشیر",
+"نگهبان","فرمانده","جاسوس","آتش","نیزه","غول","کوهستان","تیرانداز","زره","دژکوب",
+"شوالیه","سوارکار","کماندار","تبرزن","محافظ","صحرا","یخ","آتش","سنگ","آهن",
+"شمشیرزن","شاهزاده","سردار","فیل","آرش","نیزه‌دار","محافظ","شکارچی","شب","اژدها",
+"اژدها","آتشین","جادوگر","یخی","آتش","شبح","سنگی","تایتان","امپراتور","فرمانده",
+"نگهبان","سیاه","طلایی","ققنوس","غول","سلطنتی","پادشاه","قهرمان","جنگ","اسطوره"
 ];
-
-function portrait(id){
-const p={
-cyrus:["#bd8059","#29201d","#c89a36","#8e2632","crown"],
-arash:["#bd8059","#29201d","#c89a36","#245d9a","helmet"],
-ari:["#bd8059","#39251e","#b88b32","#245d9a","helmet"],
-rostam:["#b8754e","#38221b","#87502d","#6d3427","lion"],
-esf:["#d09a6c","#33221e","#e0b64e","#31518c","helmet"],
-sohrab:["#d49a70","#38251e","#a34b31","#a52c31","hair"],
-zal:["#d6a77e","#e8e2d2","#d1b45c","#285a91","hair"],
-bahram:["#bd8059","#241b19","#b58a3e","#71302d","crown"]
-}[id]||["#bd8059","#39251e","#b88b32","#245d9a","helmet"];
-let head=p[4]==="crown"
-?'<path d="M32 39 L29 12 L45 27 L60 5 L75 27 L91 12 L88 39Z" fill="#f4c84f" stroke="#6f451d" stroke-width="4"/>'
-:p[4]==="helmet"
-?'<path d="M27 50 Q23 7 60 8 Q97 7 93 50 L80 59 L40 59Z" fill="#d6ad49" stroke="#62421d" stroke-width="4"/>'
-:p[4]==="lion"
-?'<path d="M19 55 Q10 8 60 7 Q110 8 101 55 L89 78 L31 78Z" fill="#a66a2c" stroke="#57351c" stroke-width="5"/>'
-:'<path d="M26 48 Q25 8 60 12 Q95 8 94 48 L86 76 L34 76Z" fill="'+p[1]+'"/>';
-let beard=["cyrus","rostam","zal"].includes(id)
-?'<path d="M42 65 Q60 105 78 65 L73 87 L60 100 L47 87Z" fill="'+p[1]+'"/>':'';
-let weapon=id==="rostam"
-?'<path d="M88 65 L105 127" stroke="#d8bb79" stroke-width="9"/><path d="M86 47 L110 44 L119 69 L103 87 L84 70Z" fill="#96969b" stroke="#e4c77a" stroke-width="4"/>'
-:id==="ari"
-?'<path d="M88 77 L110 85 L105 119 L87 132 L69 117 L68 87Z" fill="#c89d3d" stroke="#fff0a0" stroke-width="4"/>'
-:id==="arash"||id==="bahram"
-?'<path d="M99 25 Q125 80 99 130 M99 28 L99 128" fill="none" stroke="#d9ae53" stroke-width="5"/>'
-:'<path d="M91 69 L112 122" stroke="#d8dce4" stroke-width="7"/>';
-return `<svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
-<defs><linearGradient id="bg${id}" x2="0" y2="1"><stop stop-color="#e9bd70"/><stop offset="1" stop-color="#513044"/></linearGradient></defs>
-<rect width="120" height="140" rx="12" fill="url(#bg${id})"/>
-<path d="M8 140 Q12 88 36 83 L84 83 Q108 88 112 140Z" fill="${p[3]}"/>
-<path d="M30 140 L38 78 L82 78 L92 140Z" fill="${p[2]}" stroke="#5b4025" stroke-width="4"/>
-<path d="M44 84 L60 106 L76 84" fill="none" stroke="#ffe4a0" stroke-width="5"/>
-${weapon}
-<path d="M38 43 Q38 22 60 22 Q82 22 82 43 L78 72 Q70 87 60 87 Q50 87 42 72Z" fill="${p[0]}" stroke="#6a422e" stroke-width="3"/>
-${head}${beard}
-<path d="M44 54 Q51 49 57 54 M64 54 Q71 49 77 54" stroke="#34231d" stroke-width="4" fill="none"/>
-<circle cx="51" cy="58" r="3" fill="#241a16"/><circle cx="69" cy="58" r="3" fill="#241a16"/>
-<path d="M54 70 Q60 75 66 70" fill="none" stroke="#713c30" stroke-width="3"/>
-<path d="M38 82 L60 111 L82 82" fill="none" stroke="#f0d28b" stroke-width="4"/>
-</svg>`;
-}
 
 let level=1,xp=0,cups=0,coins=500,elixir=5;
-let enemyHP=1000,playerHP=1000,active=false,seconds=120;
-let battleTimer=null,aiTimer=null,shieldUntil=0,armorUntil=0,cooldowns={};
-let owned=[0,1,2,3,4,5,6,11];
+let enemyHP=1000,playerHP=1000;
+let active=false,seconds=120;
+let battleTimer=null,aiTimer=null;
+let owned=[0,1,2,3,4,5,6,7];
 
-function unlocked(h){return level>=h.unlock}
 function show(id){
- document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
- document.getElementById(id).classList.add("active");
+document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+document.getElementById(id).classList.add("active");
 }
 function showHome(){show("home")}
 
 function showCollection(){
- show("collection");
- let html="";
- names.forEach((n,i)=>{
-  html+=`<div class="home-card">${n}<br>سطح ${level}</div>`;
- });
- html+=heroes.map(h=>{
-  const open=unlocked(h);
-  return `<div class="hero-tile ${open?"":"locked"}">
-  <div class="portrait">${portrait(h.id)}</div>
-  <div class="hero-info"><strong>${h.name}</strong><small>${h.power}</small>
-  <small>${open?"آزاد شده":"نیازمند سطح "+h.unlock}</small></div></div>`;
- }).join("");
- document.getElementById("soldiers").innerHTML=html;
+show("collection");
+let html="";
+names.forEach((n,i)=>{
+html+=`<div>${icons[i]}<br>${n}<br>سطح ${Math.min(60,Math.max(1,level))}</div>`;
+});
+document.getElementById("soldiers").innerHTML=html;
 }
 
 function update(){
- const values={level,xp,cups,coins,elixir,enemyHPText:enemyHP,playerHPText:playerHP};
- Object.keys(values).forEach(id=>document.getElementById(id).textContent=values[id]);
- document.getElementById("energy").style.width=elixir*10+"%";
- ["enemyKingBar","enemyLeftBar","enemyRightBar"].forEach(id=>document.getElementById(id).style.width=enemyHP/10+"%");
- ["playerKingBar","playerLeftBar","playerRightBar"].forEach(id=>document.getElementById(id).style.width=playerHP/10+"%");
+document.getElementById("level").textContent=level;
+document.getElementById("xp").textContent=xp;
+document.getElementById("cups").textContent=cups;
+document.getElementById("coins").textContent=coins;
+document.getElementById("elixir").textContent=elixir;
+document.getElementById("energy").style.width=(elixir*10)+"%";
+document.getElementById("enemyHPText").textContent=enemyHP;
+document.getElementById("playerHPText").textContent=playerHP;
+document.getElementById("enemyKingBar").style.width=(enemyHP/10)+"%";
+document.getElementById("enemyLeftBar").style.width=(enemyHP/10)+"%";
+document.getElementById("enemyRightBar").style.width=(enemyHP/10)+"%";
+document.getElementById("playerKingBar").style.width=(playerHP/10)+"%";
+document.getElementById("playerLeftBar").style.width=(playerHP/10)+"%";
+document.getElementById("playerRightBar").style.width=(playerHP/10)+"%";
 }
 
 function renderCards(){
- const c=document.getElementById("cards");c.innerHTML="";
- owned.forEach(i=>{
-  let cost=3+i%5,b=document.createElement("button");
-  b.className="card";
-  if(i===1)b.innerHTML=`<div class="portrait">${portrait("arash")}</div>`;
-  else if(i===11)b.innerHTML=`<div class="portrait">${portrait("ari")}</div>`;
-  else b.innerHTML=`<div class="unit"></div>`;
-  b.innerHTML+=`<div>${names[i]}</div><small>اکسیر ${cost}</small>`;
-  b.disabled=elixir<cost||!active;
-  b.onclick=()=>deploy(i);
-  c.appendChild(b);
- });
-}
-
-function renderHeroButtons(){
- const box=document.getElementById("specialHeroes");box.innerHTML="";
- heroes.forEach(h=>{
-  const open=unlocked(h),left=cooldowns[h.id]||0;
-  const btn=document.createElement("button");
-  btn.className="special-btn"+(open&&left===0?" ready":"")+(open?"":" locked");
-  btn.disabled=!active||!open||left>0;
-  btn.innerHTML=`<div class="portrait">${portrait(h.id)}</div>
-  <strong>${h.name}</strong>${h.power}
-  <small>${open?(left>0?"شارژ: "+left+" ثانیه":"آماده استفاده"):"نیازمند سطح "+h.unlock}</small>`;
-  if(open)btn.onclick=()=>useHeroPower(h.id);
-  box.appendChild(btn);
- });
+let c=document.getElementById("cards");
+c.innerHTML="";
+owned.forEach(i=>{
+let cost=3+i%5;
+let b=document.createElement("button");
+b.className="card";
+b.innerHTML=`<b>${icons[i]}</b><br>${names[i]}<br>اکسیر ${cost}`;
+b.disabled=elixir<cost || !active;
+b.onclick=()=>deploy(i);
+c.appendChild(b);
+});
 }
 
 function gainXP(n){
- xp+=n;
- while(xp>=level*100&&level<60){
-  xp-=level*100;level++;coins+=100;
-  document.getElementById("log").textContent="سطح جدید! سطح "+level;
- }
- update();
+xp+=n;
+while(xp>=level*100&&level<60){
+xp-=level*100;
+level++;
+coins+=100;
+document.getElementById("log").textContent="سطح جدید! سطح "+level;
+}
+update();
 }
 
 function startBattle(){
- show("battle");active=true;enemyHP=1000;playerHP=1000;elixir=5;seconds=120;
- shieldUntil=0;armorUntil=0;cooldowns={};
- document.getElementById("battleUnits").innerHTML="";
- document.getElementById("battleEffect").textContent="";
- document.getElementById("arena").classList.remove("shielded");
- document.getElementById("log").textContent="نبرد آغاز شد";
- document.getElementById("playerKingArt").innerHTML=portrait("cyrus");
- document.getElementById("enemyKingArt").innerHTML=portrait("cyrus");
- renderCards();renderHeroButtons();update();
- clearInterval(battleTimer);clearInterval(aiTimer);
- battleTimer=setInterval(()=>{
-  if(!active)return;
-  elixir=Math.min(10,elixir+1);seconds--;
-  Object.keys(cooldowns).forEach(id=>cooldowns[id]=Math.max(0,cooldowns[id]-1));
-  document.getElementById("timer").textContent=Math.floor(seconds/60)+":"+String(seconds%60).padStart(2,"0");
-  if(seconds<=0)finish(playerHP>enemyHP);
-  renderCards();renderHeroButtons();update();
- },1000);
- aiTimer=setInterval(()=>{
-  if(!active)return;
-  if(Date.now()<shieldUntil){document.getElementById("log").textContent="سپر آریوبرزن حمله دشمن را دفع کرد";return;}
-  let damage=Date.now()<armorUntil?5:15+Math.floor(Math.random()*20);
-  playerHP=Math.max(0,playerHP-damage);
-  document.getElementById("log").textContent=Date.now()<armorUntil?"زره رویین آسیب حمله را کاهش داد":"دشمن حمله کرد";
-  spawnUnit(false);update();if(playerHP<=0)finish(false);
- },6500);
+show("battle");
+active=true;
+enemyHP=1000;
+playerHP=1000;
+elixir=5;
+seconds=120;
+document.getElementById("battleUnits").innerHTML="";
+document.getElementById("log").textContent="نبرد آغاز شد!";
+document.getElementById("timer").textContent="2:00";
+renderCards();
+update();
+clearInterval(battleTimer);
+clearInterval(aiTimer);
+
+battleTimer=setInterval(()=>{
+if(!active)return;
+elixir=Math.min(10,elixir+1);
+seconds--;
+document.getElementById("timer").textContent=
+Math.floor(seconds/60)+":"+String(seconds%60).padStart(2,"0");
+if(seconds<=0){
+finish(playerHP>enemyHP);
+}
+renderCards();
+update();
+},1000);
+
+aiTimer=setInterval(()=>{
+if(!active)return;
+let damage=15+Math.floor(Math.random()*20);
+playerHP=Math.max(0,playerHP-damage);
+spawnUnit(false);
+document.getElementById("log").textContent="دشمن حمله کرد!";
+update();
+if(playerHP<=0)finish(false);
+},6500);
 }
 
 function deploy(i){
- if(!active)return;
- let cost=3+i%5;
- if(elixir<cost){document.getElementById("log").textContent="اکسیر کافی نیست";return;}
- elixir-=cost;spawnUnit(true,i);
- let damage=i===11?180:35+(i%10)*12;
- enemyHP=Math.max(0,enemyHP-damage);
- document.getElementById("log").textContent=names[i]+" به سپاه دشمن حمله کرد";
- renderCards();update();if(enemyHP<=0)finish(true);
+if(!active)return;
+let cost=3+i%5;
+if(elixir<cost){
+document.getElementById("log").textContent="اکسیر کافی نیست!";
+return;
 }
-
-function useHeroPower(id){
- if(!active)return;
- const h=heroes.find(x=>x.id===id);
- if(!h||!unlocked(h)||(cooldowns[id]||0)>0)return;
- const bonus=Math.floor(level*2),effect=document.getElementById("battleEffect");
- if(id==="cyrus"){
-  document.querySelectorAll(".enemyUnit").forEach(u=>u.remove());
-  enemyHP=Math.max(0,enemyHP-(300+bonus*5));
-  effect.textContent="خشم شاهنشاه: نیروهای دشمن نابود شدند";
- }
- if(id==="arash"){
-  let damage=180+bonus*6;
-  enemyHP=Math.max(0,enemyHP-damage);
-  document.querySelectorAll(".enemyUnit").forEach(u=>{u.style.filter="drop-shadow(0 0 10px #ffd34b)";setTimeout(()=>u.remove(),500)});
-  effect.textContent="باران تیر آرش: "+damage+" آسیب وارد شد";
- }
- if(id==="ari"){
-  shieldUntil=Date.now()+8000;
-  document.getElementById("arena").classList.add("shielded");
-  effect.textContent="آخرین سنگر: سپر دفاعی برای ۸ ثانیه فعال شد";
-  setTimeout(()=>{if(Date.now()>=shieldUntil)document.getElementById("arena").classList.remove("shielded")},8100);
- }
- if(id==="rostam"){
-  let damage=220+bonus*5;
-  enemyHP=Math.max(0,enemyHP-damage);
-  document.querySelectorAll(".enemyUnit").forEach(u=>{u.style.transform="translateY(-25px) scale(1.4)";setTimeout(()=>u.remove(),350)});
-  effect.textContent="گرز سام: "+damage+" آسیب وارد شد";
- }
- if(id==="esf"){
-  armorUntil=Date.now()+12000;
-  effect.textContent="زره رویین: دفاع تقویت‌شده برای ۱۲ ثانیه";
- }
- if(id==="sohrab"){
-  let damage=260+bonus*6;
-  enemyHP=Math.max(0,enemyHP-damage);
-  effect.textContent="یورش پهلوان: "+damage+" آسیب وارد شد";
-  spawnUnit(true,11);
- }
- if(id==="zal"){
-  let heal=250+bonus*5;
-  playerHP=Math.min(1000,playerHP+heal);
-  effect.textContent="فرمان سیمرغ: "+heal+" واحد سلامتی بازیابی شد";
- }
- if(id==="bahram"){
-  let damage=650+bonus*12;
-  enemyHP=Math.max(0,enemyHP-damage);
-  document.querySelectorAll(".enemyUnit").forEach(u=>u.style.filter="drop-shadow(0 0 12px orange)");
-  effect.textContent="باران آذرخش: "+damage+" آسیب وارد شد";
- }
- cooldowns[id]=h.cooldown;
- renderHeroButtons();update();
- if(enemyHP<=0)finish(true);
+elixir-=cost;
+spawnUnit(true,i);
+let damage=35+(i%10)*12;
+enemyHP=Math.max(0,enemyHP-damage);
+document.getElementById("log").textContent=names[i]+" به سپاه دشمن حمله کرد!";
+renderCards();
+update();
+if(enemyHP<=0)finish(true);
 }
 
 function spawnUnit(friend,i=0){
- let u=document.createElement("div");
- if(friend&&i===11){
-  u.className="ariobarzan";
-  u.innerHTML=`<div class="portrait">${portrait("ari")}</div><small>آریوبرزن</small>`;
- }else{
-  u.className="unit "+(friend?"friendlyUnit":"enemyUnit");
- }
- u.style.left=(15+Math.random()*65)+"%";
- u.style.top=friend?"76%":"15%";
- document.getElementById("battleUnits").appendChild(u);
- let pos=friend?76:15,step=friend?-1.2:1.2;
- let movement=setInterval(()=>{
-  if(!u.isConnected){clearInterval(movement);return;}
-  pos+=step;u.style.top=pos+"%";
-  if(pos<14||pos>83){clearInterval(movement);u.remove();}
- },100);
+let u=document.createElement("div");
+u.className="unit "+(friend?"friendlyUnit":"enemyUnit");
+u.textContent=friend?icons[i]:"سرباز";
+u.style.left=(15+Math.random()*70)+"%";
+u.style.top=friend?(65+Math.random()*15)+"%":(15+Math.random()*15)+"%";
+document.getElementById("battleUnits").appendChild(u);
+setTimeout(()=>u.remove(),3000);
 }
 
 function finish(win){
- if(!active)return;
- active=false;clearInterval(battleTimer);clearInterval(aiTimer);
- if(win){
-  cups+=30;coins+=150;gainXP(50);
-  document.getElementById("log").textContent="پیروزی! ۳۰ کاپ و ۱۵۰ سکه دریافت کردی";
- }else{
-  cups=Math.max(0,cups-10);
-  document.getElementById("log").textContent="شکست خوردی! دوباره تلاش کن";
- }
- renderCards();renderHeroButtons();update();
+if(!active)return;
+active=false;
+clearInterval(battleTimer);
+clearInterval(aiTimer);
+if(win){
+cups+=30;
+coins+=150;
+gainXP(50);
+document.getElementById("log").textContent="پیروزی! +۳۰ کاپ و ۱۵۰ سکه";
+}else{
+cups=Math.max(0,cups-10);
+document.getElementById("log").textContent="شکست خوردی! دوباره تلاش کن.";
 }
+renderCards();
+update();
+}
+
 function leaveBattle(){
- active=false;clearInterval(battleTimer);clearInterval(aiTimer);showHome();
+active=false;
+clearInterval(battleTimer);
+clearInterval(aiTimer);
+showHome();
 }
 
-try{
- const saved=JSON.parse(localStorage.getItem("nokhbeGameSave")||"null");
- if(saved){
-  level=Math.max(1,Math.min(60,saved.level||1));
-  xp=saved.xp||0;cups=saved.cups||0;coins=saved.coins||500;
- }
-}catch(e){}
-
-document.getElementById("playerKingArt").innerHTML=portrait("cyrus");
-renderCards();renderHeroButtons();update();
-</
+renderCards();
+update();
+</script>
+</body>
+</html>
