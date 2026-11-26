@@ -1,310 +1,142 @@
-
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#10182b">
 <title>نبرد نخبگان</title>
 <style>
+:root{--gold:#f7c65b;--gold2:#9d5d13;--blue:#092b59;--blue2:#1766b5;--red:#a81720;--panel:rgba(5,15,35,.88)}
 *{box-sizing:border-box}
-body{margin:0;background:#101b31;color:#fff;font-family:Tahoma,Arial,sans-serif;text-align:center}
-header{background:#172a49;padding:18px;border-bottom:2px solid #c69b43}
-h1{color:#e9bd59;margin:5px}
-button{border:0;border-radius:10px;padding:13px 20px;background:#c69b43;color:#182239;font-size:16px;font-weight:bold;cursor:pointer;margin:6px}
-button:active{transform:scale(.97)}
-.page{display:none;padding:18px;max-width:700px;margin:auto}
-.page.active{display:block}
-.panel{background:#1c3152;padding:16px;border-radius:14px;margin:14px 0}
-.stats{display:flex;justify-content:space-around;gap:8px;flex-wrap:wrap}
-.stat{background:#263f65;padding:12px;border-radius:10px;min-width:75px}
-.arena{height:270px;background:linear-gradient(#557c53 0 48%,#b49b6c 48% 52%,#557c53 52%);border:4px solid #b58b43;border-radius:14px;position:relative;overflow:hidden;margin:15px 0}
-.tower{position:absolute;width:70px;height:75px;background:#9c7448;border:4px solid #e3c18a;border-radius:10px;top:15px;display:flex;align-items:center;justify-content:center;font-weight:bold}
-.enemy{left:15px}
-.player{right:15px;bottom:15px;top:auto}
-.health{position:absolute;top:-10px;background:#a52b2b;color:white;padding:3px 8px;border-radius:5px}
-.battle-info{display:flex;justify-content:space-between;font-size:14px}
-.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:5px}
-.card{
-position:relative;
-width:100%;
-aspect-ratio:3/4;
-padding:0;
-margin:0;
-border:2px solid #248cff;
-border-radius:14px;
-overflow:hidden;
-background:#102d61;
-box-shadow:0 0 9px #168cff;
-}
-.card.hero-card{
-border:3px solid #ffd044;
-box-shadow:0 0 13px #e5a900;
-}
-.card-art{
-width:100%;
-height:100%;
-background-image:url("cards.png");
-background-repeat:no-repeat;
-background-size:400% 300%;
-}
-.card:disabled{opacity:.45;filter:grayscale(.7)}
-.card.selected{border:3px solid #fff;box-shadow:0 0 15px #fff}
-#message{min-height:30px;color:#f4d17d}
-.soldiers{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.soldier{background:#263f65;padding:12px;border-radius:10px}
-.small{font-size:12px;color:#c5d1e2}
-@media(max-width:380px){
-.cards{gap:5px;padding:2px}
-.page{padding:10px}
-}
+html,body{margin:0;min-height:100%;font-family:Tahoma,Arial,sans-serif;color:#fff;background:#10182b}
+body{min-height:100svh}
+button{font:inherit;color:inherit;cursor:pointer}
+#app{min-height:100svh;position:relative;isolation:isolate;background:linear-gradient(180deg,rgba(3,12,29,.18),rgba(3,10,24,.38)),url("assets/persepolis-bg.png") center center/cover fixed}
+#app:before{content:"";position:fixed;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(4,10,25,.15),rgba(4,10,25,.25) 48%,rgba(4,10,25,.85))}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px max(12px,env(safe-area-inset-right)) 8px max(12px,env(safe-area-inset-left));}
+.profile,.resources{display:flex;align-items:center;gap:7px}
+.profile{background:linear-gradient(135deg,#09234a,#071326);border:2px solid var(--gold);border-radius:14px;padding:6px 10px;box-shadow:0 0 14px #e6a62d66}
+.avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle,#d89b2f,#4b2108);border:2px solid #ffe18b;font-size:23px}
+.profile b{display:block;font-size:13px}.profile small{color:#ffd56e;font-size:11px}
+.resource{border:1px solid #f4cb69;border-radius:20px;background:#081a35eF;padding:7px 9px;font-size:12px;white-space:nowrap}
+.gear{width:38px;height:38px;border-radius:50%;border:2px solid #d7e6ff;background:linear-gradient(#7188a8,#142947);font-size:21px}
+.brand{text-align:center;margin:7px auto 0;padding:9px 12px;width:max-content;max-width:94%;border:3px solid #f6c65b;border-radius:18px;background:linear-gradient(120deg,#40100d,#9b4310,#32100e);box-shadow:0 5px 0 #572a0a,0 0 20px #f5b53a66;transform:perspective(400px) rotateX(2deg)}
+.brand h1{font-size:clamp(25px,7vw,38px);margin:0;color:#ffe18b;text-shadow:0 3px 2px #542000,0 0 12px #ffbd37}
+.brand p{font-size:10px;margin:3px 0 0;color:#ffe9b7}
+.screen{display:none;min-height:calc(100svh - 120px);padding:12px 14px 170px;max-width:720px;margin:auto}
+.screen.active{display:block}
+.home-space{height:clamp(210px,37svh,390px);display:flex;align-items:flex-end;justify-content:center;padding-bottom:12px}
+.primary{border:3px solid #ffe18a;border-radius:17px;padding:14px 28px;min-width:210px;background:linear-gradient(180deg,#ff5541,#a10e19 58%,#640b16);box-shadow:0 5px 0 #4c0a12,0 0 22px #ffbd3b99;color:#fff2bd;font-weight:900;font-size:23px;text-shadow:0 2px 3px #350000}
+.nav-dock{position:fixed;z-index:5;bottom:0;left:0;right:0;padding:9px 10px max(12px,env(safe-area-inset-bottom));background:linear-gradient(180deg,transparent,rgba(3,9,23,.92) 22%);display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:720px;margin:auto}
+.nav-btn{min-height:67px;border:2px solid #eac15d;border-radius:13px;background:linear-gradient(145deg,#164e8c,#071b3a 72%);box-shadow:inset 0 0 10px #70baff55,0 3px 0 #452807;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-weight:bold;font-size:12px}
+.nav-btn .ico{font-size:23px;line-height:1}
+.nav-btn:active,.primary:active,.action:active{transform:scale(.97)}
+.panel{background:var(--panel);border:1px solid #d8a947;border-radius:16px;padding:14px;margin:10px 0;box-shadow:0 5px 18px #0008}
+h2{color:#ffdc87;text-align:center;margin:8px 0 14px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.stat{background:#15345c;border:1px solid #d9ad54;border-radius:10px;padding:9px 3px;text-align:center;font-size:11px}
+.stat b{display:block;color:#ffe08a;font-size:17px;margin-top:5px}
+.action{border:1px solid #ffe18a;border-radius:11px;background:linear-gradient(#1e69ad,#082750);padding:10px 14px;font-weight:bold}
+.actions{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.battle-info{display:flex;justify-content:space-between;align-items:center;background:#06162d;border:1px solid #d6aa52;border-radius:10px;padding:9px}
+.arena{height:260px;position:relative;overflow:hidden;border:3px solid #d7ad5b;border-radius:14px;margin:12px 0;background:linear-gradient(#8fb3d0 0 42%,#5e7e4d 42% 49%,#b69b68 49% 53%,#587746 53% 100%)}
+.tower{position:absolute;width:75px;height:75px;display:grid;place-items:center;background:linear-gradient(135deg,#d8c39a,#755333);border:4px solid #f2d69b;border-radius:10px;color:#251506;font-weight:bold;top:15px}
+.tower.enemy{left:12px}.tower.player{right:12px;top:auto;bottom:12px}
+.health{position:absolute;top:-11px;background:#a51e24;color:white;padding:3px 7px;border-radius:6px;font-size:11px}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+.card{min-height:130px;border:2px solid #e9c46a;border-radius:11px;overflow:hidden;background:linear-gradient(160deg,#2863a3,#101b3b 60%,#4d1b62);display:flex;flex-direction:column;justify-content:space-between;padding:7px 3px;box-shadow:inset 0 0 10px #fff4}
+.card .portrait{height:72px;margin:0 4px;border-radius:7px;background:radial-gradient(ellipse at 50% 25%,#e5b56b,#663b2b 52%,#101a31 75%);border:1px solid #ffdc8b}
+.card strong{font-size:11px}.card small{font-size:10px;color:#ffe28a}
+.card.selected{outline:3px solid #fff;filter:brightness(1.2)}
+.soldiers{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.soldier{border:1px solid #d8ad55;border-radius:12px;background:linear-gradient(135deg,#153c6a,#09162c);padding:10px}
+.soldier b{color:#ffe08b}.small{font-size:11px;color:#c6d5e9}
+#message{min-height:24px;text-align:center;color:#ffdf8a;font-size:13px}
+.progress{height:10px;border-radius:9px;background:#10172a;overflow:hidden}.progress>div{height:100%;background:linear-gradient(90deg,#a34ce0,#f0a8ff)}
+.list-row{display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #ffffff22}
+@media(min-width:600px){.nav-dock{grid-template-columns:repeat(6,1fr)}.home-space{height:380px}.screen{padding-bottom:110px}}
 </style>
 </head>
 <body>
-
-<header>
-<h1>نبرد نخبگان</h1>
-<div>فرماندهی ارتش ایران باستان</div>
+<div id="app">
+<header class="topbar">
+  <div class="profile"><div class="avatar">♛</div><div><b>فرمانده ایران</b><small>سطح <span id="level">1</span> | لیگ تازه‌کار</small></div></div>
+  <div class="resources"><div class="resource">● <span id="coins">500</span></div><div class="resource">◆ <span id="gems">50</span></div></div>
+  <button class="gear" onclick="showPage('settings')" aria-label="تنظیمات">⚙</button>
 </header>
+<div class="brand"><h1>نبرد نخبگان</h1><p>فرماندهی ارتش ایران باستان</p></div>
 
-<section id="home" class="page active">
-<div class="panel">
-<h2>فرمانده، خوش آمدی</h2>
-<div class="stats">
-<div class="stat">سطح<br><b id="level">1</b></div>
-<div class="stat">کاپ<br><b id="cups">0</b></div>
-<div class="stat">سکه<br><b id="coins">500</b></div>
-<div class="stat">تجربه<br><b id="xp">0</b></div>
-</div>
-</div>
-<div class="panel">
-<h3>آماده نبرد هستی؟</h3>
-<button onclick="startBattle()">شروع نبرد</button>
-<button onclick="showSoldiers()">ارتش من</button>
-</div>
+<main>
+<section id="home" class="screen active">
+  <div class="home-space"><button class="primary" onclick="startBattle()">شروع نبرد</button></div>
+  <div class="panel"><div class="stats">
+    <div class="stat">کاپ<b id="cups">0</b></div><div class="stat">سکه<b id="homeCoins">500</b></div>
+    <div class="stat">تجربه<b id="xp">0</b></div><div class="stat">پیروزی<b id="wins">0</b></div>
+  </div></div>
 </section>
 
-<section id="battle" class="page">
-<h2>میدان نبرد</h2>
-<div class="battle-info">
-<span>دشمن</span>
-<span id="timer">02:00</span>
-<span>ارتش ایران</span>
-</div>
-<div class="arena">
-<div class="tower enemy">برج دشمن<div class="health" id="enemyHealth">100%</div></div>
-<div class="tower player">برج ایران<div class="health" id="myHealth">100%</div></div>
-</div>
-<div class="panel">
-<div>اکسیر: <b id="elixir">5</b> از 10</div>
-<div style="height:12px;background:#101b31;border-radius:10px;margin:10px 0;overflow:hidden">
-<div id="elixirBar" style="height:100%;width:50%;background:#9b62d1"></div>
-</div>
-<div class="cards" id="cards"></div>
-<p id="message">یک کارت انتخاب کن و وارد نبرد شو.</p>
-<button onclick="backHome()">خروج از نبرد</button>
-</div>
+<section id="battle" class="screen">
+  <h2>میدان نبرد</h2><div class="battle-info"><span>دشمن</span><b id="timer">02:00</b><span>ارتش ایران</span></div>
+  <div class="arena"><div class="tower enemy">برج دشمن<div class="health" id="enemyHealth">100%</div></div><div class="tower player">برج ایران<div class="health" id="myHealth">100%</div></div></div>
+  <div class="panel"><div>اکسیر: <b id="elixir">5</b> از 10</div><div class="progress"><div id="elixirBar" style="width:50%"></div></div>
+  <p id="message">یک کارت انتخاب کن و وارد نبرد شو.</p><div class="cards" id="cards"></div>
+  <div class="actions" style="margin-top:12px"><button class="action" onclick="backHome()">خروج از نبرد</button></div></div>
 </section>
 
-<section id="army" class="page">
-<h2>ارتش من</h2>
-<div class="panel">
-<p>تعداد سربازان: 60</p>
-<div class="soldiers" id="soldiers"></div>
-<button onclick="backHome()">بازگشت</button>
-</div>
-</section>
+<section id="army" class="screen"><h2>ارتش من</h2><div class="panel"><div class="stats"><div class="stat">تعداد نیروها<b>60</b></div><div class="stat">سطح ارتش<b id="armyLevel">1</b></div></div><div class="soldiers" id="soldiers"></div></div></section>
+<section id="ranking" class="screen"><h2>رتبه‌بندی</h2><div class="panel"><p>جدول رتبه‌بندی فعلاً نمایشی است؛ برای رتبه‌بندی آنلاین به سرور نیاز داریم.</p><div class="list-row"><b>۱. شاه پارس</b><span>۵۲۰۰ کاپ</span></div><div class="list-row"><b>۲. سردار آریا</b><span>۴۸۰۰ کاپ</span></div><div class="list-row"><b>۳. فرمانده ماد</b><span>۴۲۰۰ کاپ</span></div><div class="list-row"><b>شما</b><span id="rankCups">0 کاپ</span></div></div></section>
+<section id="shop" class="screen"><h2>فروشگاه</h2><div class="panel"><p>فروشگاه و خریدهای واقعی در مرحله بعد به اقتصاد بازی متصل می‌شوند.</p><div class="list-row"><b>کیسه سکه</b><span>۱۰۰ سکه</span></div><div class="list-row"><b>صندوق جنگی</b><span>پاداش روزانه</span></div></div></section>
+<section id="missions" class="screen"><h2>ماموریت‌ها و جوایز</h2><div class="panel"><div class="list-row"><b>یک نبرد انجام بده</b><span>+۳۰ سکه</span></div><div class="list-row"><b>سه پیروزی کسب کن</b><span>+۱۰۰ سکه</span></div><p class="small">ماموریت‌ها در نسخه بعدی قابل دریافت و ذخیره خواهند شد.</p></div></section>
+<section id="settings" class="screen"><h2>تنظیمات</h2><div class="panel"><div class="list-row"><b>موسیقی</b><span>در دست ساخت</span></div><div class="list-row"><b>افکت صدا</b><span>در دست ساخت</span></div><div class="list-row"><b>ذخیره بازی</b><span>خودکار روی همین دستگاه</span></div><button class="action" onclick="resetGame()">شروع دوباره بازی</button></div></section>
+</main>
 
+<nav class="nav-dock" aria-label="منوی اصلی">
+  <button class="nav-btn" onclick="startBattle()"><span class="ico">⚔</span>شروع نبرد</button>
+  <button class="nav-btn" onclick="showPage('army')"><span class="ico">♜</span>ارتش من</button>
+  <button class="nav-btn" onclick="showPage('ranking')"><span class="ico">🏆</span>رتبه‌بندی</button>
+  <button class="nav-btn" onclick="showPage('missions')"><span class="ico">📜</span>جوایز</button>
+  <button class="nav-btn" onclick="showPage('shop')"><span class="ico">◆</span>فروشگاه</button>
+  <button class="nav-btn" onclick="showPage('settings')"><span class="ico">⚙</span>تنظیمات</button>
+</nav>
+</div>
 <script>
-const names=[
-"سرباز هخامنشی","کماندار پارسی","نیزه‌دار","شمشیرزن","سواره‌نظام",
-"تیرانداز","نگهبان شاهی","سرباز جاویدان","فیل جنگی","گرزدار",
-"نیزه‌دار سنگین","کماندار کوهستان","سواره‌کماندار","سرباز سپردار","جنگجوی پارسی",
-"محافظ دربار","سرباز زره‌پوش","نیروی ویژه","تیرانداز ماهر","سوارکار سریع",
-"فرمانده سپاه","جنگجوی کوهستان","سرباز آتشین","نگهبان دژ","نیروی کمکی",
-"شمشیرزن ماهر","کماندار شاهی","سواره‌نظام سنگین","سرباز پیاده","جنگجوی دلیر",
-"آریوبرزن","رستم","آرش","کوروش","اسفندیار",
-"سهراب","زال","بهرام","سرباز افسانه‌ای","فرمانده جاویدان",
-"نگهبان تخت","شکارچی دشمن","جنگجوی زره‌دار","تیرانداز سلطنتی","سوارکار جنگی",
-"نیزه‌دار شاهی","محافظ فرمانده","جنگجوی نیرومند","سرباز وفادار","فرمانده بزرگ",
-"کماندار افسانه‌ای","شمشیرزن افسانه‌ای","سواره‌نظام شاهی","نگهبان طلایی","جنگجوی شکست‌ناپذیر",
-"قهرمان ایران","سردار بزرگ","فرمانده جاوید","پهلوان ایران","شاه جنگاور"
-];
-
-const cards=[
-{name:"آریوبرزن",cost:6,damage:35,art:0,hero:true},
-{name:"کوروش بزرگ",cost:7,damage:45,art:1,hero:true},
-{name:"رستم دستان",cost:8,damage:55,art:2,hero:true},
-{name:"آرش کمانگیر",cost:3,damage:25,art:3},
-{name:"سهراب",cost:4,damage:30,art:4,hero:true},
-{name:"اسفندیار",cost:5,damage:40,art:5,hero:true},
-{name:"داریوش بزرگ",cost:5,damage:38,art:6,hero:true},
-{name:"موبد موبدان",cost:4,damage:20,art:7,hero:true},
-{name:"فیل جنگی",cost:6,damage:50,art:8},
-{name:"نیزه‌دار",cost:3,damage:22,art:9},
-{name:"سواره نظام",cost:4,damage:32,art:10},
-{name:"منجنیق",cost:5,damage:42,art:11}
-];
-
-let coins=500,cups=0,xp=0,level=1;
-let elixir=5,enemyHealth=100,myHealth=100;
-let seconds=120,selected=-1,battleTimer=null,elixirTimer=null,enemyTimer=null;
-let battleActive=false;
-
-function showPage(id){
-document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-document.getElementById(id).classList.add("active");
-}
-
+const soldierNames=["شمشیرزن","کماندار پارسی","نیزه‌دار","سواره‌نظام","گرزدار","نگهبان شاهی","سرباز جاویدان","فیل جنگی","آریوبرزن","کوروش بزرگ","رستم دستان","آرش کمانگیر","سهراب","اسفندیار","داریوش بزرگ","موبد موبدان"];
+const battleCards=[{name:"آریوبرزن",cost:4,damage:24},{name:"کوروش بزرگ",cost:7,damage:42},{name:"رستم دستان",cost:8,damage:50},{name:"آرش کمانگیر",cost:3,damage:19},{name:"سهراب",cost:4,damage:25},{name:"اسفندیار",cost:5,damage:32},{name:"داریوش بزرگ",cost:5,damage:31},{name:"موبد موبدان",cost:4,damage:20}];
+let data={coins:500,gems:50,cups:0,xp:0,level:1,wins:0};
+try{data={...data,...JSON.parse(localStorage.getItem("nokhbegan-save")||"{}")}}catch(e){}
+let elixir=5,enemyHealth=100,myHealth=100,seconds=120,battleActive=false,timers=[];
+function save(){localStorage.setItem("nokhbegan-save",JSON.stringify(data))}
 function updateStats(){
-document.getElementById("coins").textContent=coins;
-document.getElementById("cups").textContent=cups;
-document.getElementById("xp").textContent=xp;
-document.getElementById("level").textContent=level;
+ ["coins","homeCoins"].forEach(id=>document.getElementById(id).textContent=data.coins);
+ document.getElementById("gems").textContent=data.gems;document.getElementById("cups").textContent=data.cups;
+ document.getElementById("xp").textContent=data.xp;document.getElementById("level").textContent=data.level;
+ document.getElementById("wins").textContent=data.wins;document.getElementById("armyLevel").textContent=data.level;
+ document.getElementById("rankCups").textContent=data.cups+" کاپ";save();
 }
-
+function showPage(id){document.querySelectorAll(".screen").forEach(p=>p.classList.remove("active"));document.getElementById(id).classList.add("active");}
+function clearTimers(){timers.forEach(clearInterval);timers=[]}
 function startBattle(){
-clearTimers();
-elixir=5;
-enemyHealth=100;
-myHealth=100;
-seconds=120;
-selected=-1;
-battleActive=true;
-showPage("battle");
-renderCards();
-updateBattle();
-
-battleTimer=setInterval(()=>{
-if(!battleActive)return;
-seconds--;
-if(seconds<=0)finishBattle();
-updateBattle();
-},1000);
-
-elixirTimer=setInterval(()=>{
-if(battleActive&&elixir<10){
-elixir++;
-updateBattle();
+ clearTimers();elixir=5;enemyHealth=100;myHealth=100;seconds=120;battleActive=true;
+ showPage("battle");renderCards();updateBattle();
+ timers.push(setInterval(()=>{if(!battleActive)return;seconds--;if(seconds<=0)finishBattle();updateBattle()},1000));
+ timers.push(setInterval(()=>{if(battleActive&&elixir<10){elixir++;updateBattle()}},2500));
+ timers.push(setInterval(()=>{if(!battleActive)return;myHealth=Math.max(0,myHealth-5);updateBattle();if(myHealth<=0)finishBattle(false)},7000));
 }
-},2500);
-
-enemyTimer=setInterval(()=>{
-if(!battleActive)return;
-myHealth=Math.max(0,myHealth-5);
-updateBattle();
-if(myHealth<=0)finishBattle(false);
-},7000);
-}
-
-function clearTimers(){
-clearInterval(battleTimer);
-clearInterval(elixirTimer);
-clearInterval(enemyTimer);
-}
-
-function renderCards(){
-const area=document.getElementById("cards");
-area.innerHTML="";
-
-cards.forEach((card,i)=>{
-const div=document.createElement("button");
-div.className="card"+(card.hero?" hero-card":"")+(selected===i?" selected":"");
-
-let col=card.art%4;
-let row=Math.floor(card.art/4);
-let x=col*100/3;
-let y=row*50;
-
-div.innerHTML=`<div class="card-art" style="background-position:${x}% ${y}%"></div>`;
-div.disabled=elixir<card.cost||!battleActive;
-div.onclick=()=>playCard(i);
-area.appendChild(div);
-});
-}
-
-function playCard(i){
-if(!battleActive)return;
-const card=cards[i];
-
-if(elixir<card.cost){
-document.getElementById("message").textContent="اکسیر کافی نداری!";
-return;
-}
-
-elixir-=card.cost;
-enemyHealth=Math.max(0,enemyHealth-card.damage);
-document.getElementById("message").textContent="نیروهای "+card.name+" به دشمن حمله کردند!";
-updateBattle();
-renderCards();
-
-if(enemyHealth<=0)finishBattle(true);
-}
-
-function updateBattle(){
-document.getElementById("elixir").textContent=elixir;
-document.getElementById("elixirBar").style.width=(elixir*10)+"%";
-document.getElementById("enemyHealth").textContent=enemyHealth+"%";
-document.getElementById("myHealth").textContent=myHealth+"%";
-
-let m=Math.floor(seconds/60),s=seconds%60;
-document.getElementById("timer").textContent=String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
-
-renderCards();
-}
-
-function finishBattle(won){
-if(!battleActive)return;
-battleActive=false;
-clearTimers();
-
-if(won){
-cups+=30;
-coins+=100;
-xp+=50;
-document.getElementById("message").textContent="پیروزی! دشمن شکست خورد.";
-}else if(myHealth<=0){
-cups=Math.max(0,cups-15);
-document.getElementById("message").textContent="شکست خوردی! دوباره تلاش کن.";
-}else{
-if(enemyHealth<myHealth){
-cups+=10;
-coins+=30;
-xp+=20;
-document.getElementById("message").textContent="نبرد مساوی شد؛ پاداش دریافت کردی.";
-}else{
-cups=Math.max(0,cups-10);
-document.getElementById("message").textContent="زمان تمام شد؛ این نبرد را واگذار کردی.";
-}
-}
-
-if(xp>=100){
-xp-=100;
-level++;
-}
-updateStats();
-renderCards();
-}
-
-function showSoldiers(){
-const area=document.getElementById("soldiers");
-area.innerHTML="";
-names.forEach((name,i)=>{
-const div=document.createElement("div");
-div.className="soldier";
-div.innerHTML="<b>"+name+"</b><p class='small'>سطح 1</p>";
-area.appendChild(div);
-});
-showPage("army");
-}
-
-function backHome(){
-battleActive=false;
-clearTimers();
-showPage("home");
-updateStats();
-}
-
-updateStats();
+function renderCards(){const area=document.getElementById("cards");area.innerHTML="";
+ battleCards.forEach((c,i)=>{const el=document.createElement("button");el.className="card";el.innerHTML='<span class="portrait"></span><strong>'+c.name+'</strong><small>'+c.cost+' اکسیر</small>';el.onclick=()=>playCard(i);area.appendChild(el)})}
+function playCard(i){if(!battleActive)return;const c=battleCards[i];if(elixir<c.cost){document.getElementById("message").textContent="اکسیر کافی نداری!";return}
+ elixir-=c.cost;enemyHealth=Math.max(0,enemyHealth-c.damage);document.getElementById("message").textContent="نیروهای "+c.name+" حمله کردند!";updateBattle();if(enemyHealth<=0)finishBattle(true)}
+function updateBattle(){document.getElementById("elixir").textContent=elixir;document.getElementById("elixirBar").style.width=(elixir*10)+"%";document.getElementById("enemyHealth").textContent=enemyHealth+"%";document.getElementById("myHealth").textContent=myHealth+"%";document.getElementById("timer").textContent=String(Math.floor(seconds/60)).padStart(2,"0")+":"+String(seconds%60).padStart(2,"0")}
+function finishBattle(won){if(!battleActive)return;battleActive=false;clearTimers();
+ if(won){data.cups+=30;data.coins+=100;data.xp+=50;data.wins++;document.getElementById("message").textContent="پیروزی! دشمن شکست خورد."}
+ else if(myHealth<=0){data.cups=Math.max(0,data.cups-15);document.getElementById("message").textContent="شکست خوردی! دوباره تلاش کن."}
+ else if(enemyHealth<myHealth){data.cups+=10;data.coins+=30;data.xp+=20;document.getElementById("message").textContent="نبرد مساوی شد؛ پاداش دریافت کردی."}
+ else{data.cups=Math.max(0,data.cups-10);document.getElementById("message").textContent="زمان تمام شد؛ این نبرد را واگذار کردی."}
+ if(data.xp>=100){data.xp-=100;data.level++}updateStats()}
+function renderArmy(){const a=document.getElementById("soldiers");a.innerHTML="";for(let i=0;i<60;i++){let d=document.createElement("div");d.className="soldier";d.innerHTML="<b>"+(soldierNames[i%soldierNames.length])+"</b><p class='small'>سطح "+Math.min(60,data.level)+" · کارت نیرو</p>";a.appendChild(d)}}
+function backHome(){battleActive=false;clearTimers();showPage("home");updateStats()}
+function resetGame(){if(confirm("همه پیشرفت ذخیره‌شده پاک شود؟")){localStorage.removeItem("nokhbegan-save");data={coins:500,gems:50,cups:0,xp:0,level:1,wins:0};updateStats();backHome()}}
+renderArmy();updateStats();
 </script>
 </body>
 </html>
