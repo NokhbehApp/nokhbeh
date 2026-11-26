@@ -3,533 +3,252 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#07152e">
-<title>نخبه | همراه هوشمند یادگیری</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>نبرد نخبگان</title>
 <style>
-:root{
- --bg:#07152e;--panel:#102343;--panel2:#142d50;
- --cyan:#28e0df;--gold:#ffd166;--white:#f3f7ff;
- --muted:#a9bad2;--green:#38d996;--red:#ff687d;
-}
 *{box-sizing:border-box}
 body{
- margin:0;background:var(--bg);color:var(--white);
- font-family:Tahoma,Arial,sans-serif;line-height:1.8;
+ margin:0;background:#10182c;color:white;
+ font-family:Tahoma,Arial;padding:15px;
 }
 header{
- padding:22px 18px;background:linear-gradient(130deg,#102b50,#07152e);
- border-bottom:1px solid #244366;
+ text-align:center;padding:18px;
+ background:linear-gradient(135deg,#183e70,#111c39);
+ border-radius:18px;border:1px solid #2878a8;
 }
-.logo{font-size:29px;font-weight:bold;color:var(--cyan)}
-header p{margin:3px 0;color:var(--muted);font-size:13px}
-main{max-width:850px;margin:auto;padding:17px}
-h2{color:var(--cyan);font-size:19px}
-h3{font-size:16px}
-.panel{
- background:var(--panel);border:1px solid #244366;
- border-radius:17px;padding:17px;margin:15px 0;
+h1{color:#48e3e8;margin:5px}
+h2{font-size:19px;color:#ffd166}
+.stats{
+ display:grid;grid-template-columns:repeat(3,1fr);
+ gap:8px;margin:15px 0;
 }
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.tile{
- background:var(--panel2);border:1px solid #29496c;
- border-radius:14px;padding:16px;text-align:center;
+.stat,.panel{
+ background:#1c2943;border:1px solid #344765;
+ border-radius:13px;padding:13px;text-align:center;
 }
-.tile b{display:block;color:var(--gold);font-size:16px}
-.tile span{font-size:12px;color:var(--muted)}
-button,select,input{
- font:inherit;border-radius:10px;padding:11px;
-}
+.stat b{display:block;color:#ffd166;margin-top:7px}
+.panel{margin:12px 0;text-align:right}
 button{
- background:var(--cyan);color:#06172b;border:0;
- font-weight:bold;cursor:pointer;
+ border:0;border-radius:10px;padding:11px;
+ background:#168eaa;color:white;font-weight:bold;
+ cursor:pointer;font-size:14px;margin:4px;
 }
-button.secondary{background:#203b60;color:white;border:1px solid #416184}
-button.gold{background:var(--gold)}
-button:disabled{opacity:.45;cursor:not-allowed}
-select,input{
- background:#091a34;color:white;border:1px solid #365475;
- width:100%;margin:5px 0 12px;
+button:disabled{opacity:.4}
+.gold{background:#b47a18}
+.red{background:#b53d49}
+.green{background:#178b60}
+.cards{
+ display:grid;grid-template-columns:repeat(2,1fr);gap:10px
 }
-label{color:var(--muted);font-size:13px}
-nav{
- display:flex;gap:8px;overflow-x:auto;padding:12px 0;
+.card{
+ background:#263957;border:1px solid #526c8d;
+ border-radius:13px;padding:12px;text-align:center;
 }
-nav button{white-space:nowrap;flex-shrink:0}
-.hidden{display:none!important}
-.subject{
- padding:12px;background:#172f50;border-radius:10px;
- margin:8px 0;cursor:pointer;border:1px solid #29496c;
-}
-.subject:hover{border-color:var(--cyan)}
-.question{
- font-size:18px;font-weight:bold;margin:15px 0;
-}
-.option{
- display:block;width:100%;text-align:right;margin:9px 0;
- background:#1b365a;color:white;border:1px solid #3b5779;
-}
-.option.selected{border:2px solid var(--cyan);background:#17475a}
-.option.correct{background:#14563f;border-color:var(--green)}
-.option.wrong{background:#5a2637;border-color:var(--red)}
-.muted{color:var(--muted);font-size:13px}
-.stat{color:var(--gold);font-weight:bold}
-#confetti{position:fixed;inset:0;pointer-events:none;z-index:1000}
-.progress{height:8px;background:#253b59;border-radius:20px;overflow:hidden}
-.progress div{height:100%;background:var(--cyan);width:0}
-footer{text-align:center;color:var(--muted);padding:25px;font-size:12px}
+.card strong{color:#ffd166}
+.small{font-size:12px;color:#b9c9dc}
+#message{color:#65e9ba;line-height:2}
+select{padding:9px;border-radius:8px}
 </style>
 </head>
 <body>
-<canvas id="confetti"></canvas>
+
 <header>
- <div class="logo">✦ نُخبه</div>
- <p>همراه هوشمند یادگیری و موفقیت تحصیلی</p>
+<h1>⚔️ نبرد نخبگان ⚔️</h1>
+<div>امپراتوری خودت را بساز!</div>
 </header>
-<main>
- <section id="home">
-  <div class="panel">
-   <h2>به نخبه خوش آمدی!</h2>
-   <p>اینجا قراره با تمرین، یادگیری و رقابت پیشرفت کنی.</p>
-   <label>پایه تحصیلی خودت رو انتخاب کن</label>
-   <select id="grade" onchange="updateGrade()">
-    <option value="7">هفتم</option>
-    <option value="8">هشتم</option>
-    <option value="9">نهم</option>
-   </select>
-   <div class="grid">
-    <div class="tile"><b>۳ پایه</b><span>هفتم تا نهم</span></div>
-    <div class="tile"><b>رایگان</b><span>یادگیری برای همه</span></div>
-   </div>
-  </div>
-  <h2>بخش‌های نخبه</h2>
-  <div class="grid">
-   <div class="tile" onclick="show('lessons')"><b>📚 آموزش درس‌ها</b><span>انتخاب درس و یادگیری</span></div>
-   <div class="tile" onclick="show('exam')"><b>🏆 آزمون حرفه‌ای</b><span>از آسان تا تیزهوشان</span></div>
-   <div class="tile" onclick="show('notes')"><b>📝 جزوه‌ها</b><span>خلاصه و نکته‌های درسی</span></div>
-   <div class="tile" onclick="show('planner')"><b>📅 برنامه‌ریز</b><span>مدیریت زمان مطالعه</span></div>
-   <div class="tile" onclick="show('ranking')"><b>🥇 رتبه‌بندی</b><span>رقابت دانش‌آموزان</span></div>
-   <div class="tile" onclick="show('about')"><b>✨ درباره نخبه</b><span>هدف ما چیست؟</span></div>
-  </div>
- </section>
 
- <section id="lessons" class="hidden">
-  <button class="secondary" onclick="show('home')">← بازگشت</button>
-  <h2>آموزش درس‌ها</h2>
-  <div class="panel">
-   <p>پایه انتخاب‌شده: <b id="lessonGrade" class="stat">هفتم</b></p>
-   <div id="subjects"></div>
-  </div>
-  <div id="lessonContent" class="panel hidden"></div>
- </section>
+<div class="stats">
+ <div class="stat">🪙 سکه<b id="coins">500</b></div>
+ <div class="stat">🏆 کاپ<b id="cups">0</b></div>
+ <div class="stat">👑 لیگ<b id="league">برنز</b></div>
+</div>
 
- <section id="exam" class="hidden">
-  <button class="secondary" onclick="show('home')">← بازگشت</button>
-  <h2>آزمون حرفه‌ای نخبه</h2>
-  <div id="setup" class="panel">
-   <p>آزمونت رو خودت طراحی کن!</p>
-   <label>سطح آزمون</label>
-   <select id="level">
-    <option value="easy">آسان</option>
-    <option value="medium" selected>متوسط</option>
-    <option value="hard">سخت</option>
-    <option value="genius">تیزهوشان</option>
-   </select>
-   <label>تعداد سؤال</label>
-   <select id="count">
-    <option>5</option><option>10</option><option>20</option>
-    <option>30</option><option>50</option><option>100</option>
-   </select>
-   <p class="muted">زمان آزمون: یک دقیقه برای هر سؤال</p>
-   <button onclick="startExam()">شروع آزمون 🚀</button>
-  </div>
-  <div id="quiz" class="panel hidden">
-   <div class="grid">
-    <div>سؤال: <b id="number" class="stat"></b></div>
-    <div>زمان: <b id="timer" class="stat"></b></div>
-   </div>
-   <div class="progress"><div id="bar"></div></div>
-   <div class="question" id="question"></div>
-   <div id="options"></div>
-   <p id="feedback" class="muted"></p>
-   <button id="next" onclick="nextQuestion()" disabled>سؤال بعدی ←</button>
-  </div>
-  <div id="result" class="panel hidden"></div>
- </section>
+<div class="panel">
+<h2>🏰 مقر فرماندهی</h2>
+<p>سطح فرمانده: <b id="commander">1</b></p>
+<p>تعداد پیروزی: <b id="wins">0</b></p>
+<p>تعداد شکست: <b id="losses">0</b></p>
+</div>
 
- <section id="notes" class="hidden">
-  <button class="secondary" onclick="show('home')">← بازگشت</button>
-  <h2>جزوه و خلاصه‌ها</h2>
-  <div class="panel">
-   <p>جزوه‌های آموزشی هر پایه در این قسمت قرار می‌گیرند.</p>
-   <p class="muted">بخش محتوای کامل جزوه‌ها در مرحله تولید محتوای آموزشی تکمیل خواهد شد.</p>
-  </div>
- </section>
+<div class="panel">
+<h2>⚔️ میدان نبرد</h2>
+<p>آماده‌ای با ارتش خودت به جنگ بروی؟</p>
+<div style="text-align:center;font-size:45px">🛡️ ⚔️ 🛡️</div>
+<button class="green" onclick="battle()" style="width:95%">
+شروع نبرد!
+</button>
+<p id="message">فرمانده، منتظر دستور تو هستیم!</p>
+</div>
 
- <section id="planner" class="hidden">
-  <button class="secondary" onclick="show('home')">← بازگشت</button>
-  <h2>برنامه‌ریز مطالعه</h2>
-  <div class="panel">
-   <label>نام درس</label>
-   <input id="task" placeholder="مثلاً ریاضی">
-   <label>مدت مطالعه به دقیقه</label>
-   <input id="duration" type="number" min="5" value="30">
-   <button onclick="addTask()">ثبت برنامه</button>
-   <div id="tasks"></div>
-  </div>
- </section>
+<div class="panel">
+<h2>🎴 ارتش من</h2>
+<div class="cards" id="army"></div>
+</div>
 
- <section id="ranking" class="hidden">
-  <button class="secondary" onclick="show('home')">← بازگشت</button>
-  <h2>جدول رتبه‌بندی</h2>
-  <div class="panel">
-   <p>برای مشاهده و به‌روزرسانی رتبه دانش‌آموزان، اتصال اینترنت لازم است.</p>
-   <p class="muted">زیرساخت رتبه‌بندی آنلاین در مرحله بعد به سرور متصل می‌شود.</p>
-  </div>
- </section>
+<div class="panel">
+<h2>🏪 فروشگاه کارت‌ها</h2>
+<p class="small">برای به‌دست‌آوردن کارت‌های جدید، باید به سؤال ویژه پاسخ صحیح بدهی.</p>
+<div class="cards" id="shop"></div>
+</div>
 
- <section id="about" class="hidden">
-  <button class="secondary" onclick="show('home')">← بازگشت</button>
-  <h2>درباره نخبه</h2>
-  <div class="panel">
-   <p>نخبه با هدف فراهم‌کردن آموزش رایگان و باکیفیت برای دانش‌آموزان متوسطه اول ساخته می‌شود.</p>
-   <p>یادگیری، تمرین، آزمون و پیشرفت؛ همه در یک مسیر.</p>
-  </div>
- </section>
-</main>
-<footer>نخبه | آینده از یادگیری شروع می‌شود 💙</footer>
+<div class="panel">
+<h2>🏆 جدول لیگ‌ها</h2>
+<div id="leagues"></div>
+</div>
+
+<div class="panel">
+<h2>📜 راهنمای بازی</h2>
+<p class="small">
+هر پیروزی کاپ و سکه می‌دهد. با افزایش کاپ، لیگ تو تغییر می‌کند.
+سربازها را تا سطح ۶۰ ارتقا بده و ارتش قدرتمندی بساز.
+</p>
+<button class="red" onclick="resetGame()">شروع دوباره بازی</button>
+</div>
 
 <script>
-const sections=['home','lessons','exam','notes','planner','ranking','about'];
-function show(id){
- sections.forEach(s=>document.getElementById(s).classList.add('hidden'));
- document.getElementById(id).classList.remove('hidden');
- if(id==='lessons') updateGrade();
+const initialCards=[
+ {id:1,name:"سرباز",emoji:"⚔️",level:1,owned:true,cost:0},
+ {id:2,name:"کماندار",emoji:"🏹",level:1,owned:true,cost:0},
+ {id:3,name:"شوالیه",emoji:"🛡️",level:1,owned:false,cost:150},
+ {id:4,name:"غول",emoji:"👹",level:1,owned:false,cost:250},
+ {id:5,name:"جادوگر",emoji:"🧙",level:1,owned:false,cost:350},
+ {id:6,name:"اژدها",emoji:"🐉",level:1,owned:false,cost:500},
+ {id:7,name:"فرمانده",emoji:"👑",level:1,owned:false,cost:700},
+ {id:8,name:"نیزه‌دار",emoji:"🔱",level:1,owned:false,cost:200}
+];
+
+let saved=localStorage.getItem("nobatNokhbegan");
+let game=saved?JSON.parse(saved):{
+ coins:500,cups:0,wins:0,losses:0,
+ commander:1,cards:initialCards
+};
+
+function save(){
+ localStorage.setItem("nobatNokhbegan",JSON.stringify(game));
+ render();
 }
-function updateGrade(){
- const g=document.getElementById('grade').value;
- const names={7:'هفتم',8:'هشتم',9:'نهم'};
- document.getElementById('lessonGrade').innerText=names[g];
- const subjects=['ریاضی','علوم تجربی','فارسی','عربی','مطالعات اجتماعی','زبان انگلیسی','پیام‌های آسمان'];
- document.getElementById('subjects').innerHTML=subjects.map(s=>
- `<div class="subject" onclick="openLesson('${s}')">📘 ${s} <span class="muted">← مشاهده</span></div>`
- ).join('');
+
+function leagueName(){
+ if(game.cups>=2000)return "افسانه‌ای";
+ if(game.cups>=1200)return "الماس";
+ if(game.cups>=700)return "طلایی";
+ if(game.cups>=300)return "نقره‌ای";
+ return "برنز";
 }
-function openLesson(name){
- const box=document.getElementById('lessonContent');
- box.classList.remove('hidden');
- box.innerHTML=`<h3>${name}</h3>
- <p>بخش آموزش ${name} در حال آماده‌سازی محتوای کامل است.</p>
- <p class="muted">درس‌ها، مثال‌های حل‌شده، تمرین و ویدیوهای آموزشی به‌مرور به نخبه اضافه می‌شوند.</p>`;
-}
-let questions=[],index=0,answers=[],seconds=0,clock=null,locked=false;
-function makeQuestion(level){
- let a,b,op,answer,question,explanation;
- const range=level==='easy'?10:level==='medium'?30:level==='hard'?100:300;
- a= Math.floor(Math.random()*range)+2;
- b= Math.floor(Math.random()*range)+2;
- const type=Math.floor(Math.random()*(level==='genius'?4:3));
- if(type===0){op='+';answer=a+b;question=`حاصل ${a} + ${b} کدام است؟`}
- else if(type===1){if(b>a)[a,b]=[b,a];op='−';answer=a-b;question=`حاصل ${a} − ${b} کدام است؟`}
- else if(type===2){a=Math.min(a,20);b=Math.min(b,20);op='×';answer=a*b;question=`حاصل ${a} × ${b} کدام است؟`}
- else{
-  b=Math.floor(Math.random()*12)+2;
-  answer=a;
-  a=a*b;
-  question=`اگر ${a} را بر ${b} تقسیم کنیم، حاصل چیست؟`;
- }
- explanation=`پاسخ درست ${answer} است. با انجام محاسبه مرحله‌به‌مرحله به این نتیجه می‌رسیم.`;
- let choices=new Set([answer]);
- while(choices.size<4){
-  let offset=Math.floor(Math.random()*11)-5;
-  if(offset!==0)choices.add(Math.max(0,answer+offset));
- }
- let opts=[...choices].sort(()=>Math.random()-.5);
- return {question,answer,opts,explanation};
-}
-function startExam(){
- const count=Number(document.getElementById('count').value);
- const level=document.getElementById('level').value;
- questions=Array.from({length:count},()=>makeQuestion(level));
- index=0;answers=[];seconds=count*60;
- document.getElementById('setup').classList.add('hidden');
- document.getElementById('result').classList.add('hidden');
- document.getElementById('quiz').classList.remove('hidden');
- clearInterval(clock);
- clock=setInterval(()=>{
-  seconds--;
-  document.getElementById('timer').innerText=formatTime(seconds);
-  if(seconds<=0)finishExam();
- },1000);
- renderQuestion();
-}
-function formatTime(s){
- return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
-}
-function renderQuestion(){
- locked=false;
- const q=questions[index];
- document.getElementById('number').innerText=(index+1)+' از '+questions.length;
- document.getElementById('timer').innerText=formatTime(seconds);
- document.getElementById('bar').style.width=((index/questions.length)*100)+'%';
- document.getElementById('question').innerText=q.question;
- document.getElementById('feedback').innerText='';
- document.getElementById('next').disabled=true;
- document.getElementById('next').innerText=index===questions.length-1?'پایان آزمون':'سؤال بعدی ←';
- document.getElementById('options').innerHTML=q.opts.map((v,i)=>
- `<button class="option" onclick="chooseAnswer(${v},this)">${['الف','ب','ج','د'][i]}) ${v}</button>`
- ).join('');
-}
-function chooseAnswer(value,button){
- if(locked)return;
- locked=true;
- const q=questions[index];
- const correct=value===q.answer;
- answers[index]={chosen:value,correct};
- document.querySelectorAll('.option').forEach(btn=>{
-  const n=Number(btn.innerText.split(') ')[1]);
-  if(n===q.answer)btn.classList.add('correct');
-  else if(btn===button)btn.classList.add('wrong');
+
+function render(){
+ document.getElementById("coins").textContent=game.coins;
+ document.getElementById("cups").textContent=game.cups;
+ document.getElementById("league").textContent=leagueName();
+ document.getElementById("wins").textContent=game.wins;
+ document.getElementById("losses").textContent=game.losses;
+ document.getElementById("commander").textContent=game.commander;
+
+ let army=document.getElementById("army");
+ army.innerHTML="";
+
+ game.cards.filter(c=>c.owned).forEach(c=>{
+ let cost=c.level*25;
+ army.innerHTML+=`
+ <div class="card">
+ <div style="font-size:35px">${c.emoji}</div>
+ <strong>${c.name}</strong>
+ <p>سطح ${c.level} از ۶۰</p>
+ <p class="small">قدرت: ${c.level*10}</p>
+ <button class="gold" ${c.level>=60||game.coins<cost?"disabled":""}
+ onclick="upgrade(${c.id})">
+ ارتقا ${cost} 🪙
+ </button>
+ </div>`;
  });
- document.getElementById('feedback').innerText=
- correct?'آفرین! پاسخ درست بود 🎉':`پاسخ درست: ${q.answer}`;
- if(correct)celebrate();
- document.getElementById('next').disabled=false;
+
+ let shop=document.getElementById("shop");
+ shop.innerHTML="";
+ game.cards.filter(c=>!c.owned).forEach(c=>{
+ shop.innerHTML+=`
+ <div class="card">
+ <div style="font-size:35px">${c.emoji}</div>
+ <strong>${c.name}</strong>
+ <p>${c.cost} سکه</p>
+ <button onclick="question(${c.id})">باز کردن کارت</button>
+ </div>`;
+ });
+
+ document.getElementById("leagues").innerHTML=
+ `🥉 برنز: ۰ کاپ<br>
+ 🥈 نقره‌ای: ۳۰۰ کاپ<br>
+ 🥇 طلایی: ۷۰۰ کاپ<br>
+ 💎 الماس: ۱۲۰۰ کاپ<br>
+ 👑 افسانه‌ای: ۲۰۰۰ کاپ`;
 }
-function nextQuestion(){
- if(!locked)return;
- index++;
- if(index>=questions.length)finishExam();
- else renderQuestion();
+
+function upgrade(id){
+ let c=game.cards.find(x=>x.id===id);
+ let cost=c.level*25;
+ if(c.level>=60||game.coins<cost)return;
+ game.coins-=cost;
+ c.level++;
+ save();
+ document.getElementById("message").textContent=
+ "🎉 سرباز با موفقیت ارتقا یافت!";
 }
-function finishExam(){
- clearInterval(clock);
- const score=answers.filter(a=>a&&a.correct).length;
- const percent=Math.round(score/questions.length*100);
- const old=Number(localStorage.getItem('nakhbeBest')||0);
- if(percent>old)localStorage.setItem('nakhbeBest',percent);
- document.getElementById('quiz').classList.add('hidden');
- const result=document.getElementById('result');
- result.classList.remove('hidden');
- result.innerHTML=`<h2>آزمون به پایان رسید! 🏆</h2>
- <p>تعداد سؤال: ${questions.length}</p>
- <p>پاسخ درست: <b class="stat">${score}</b></p>
- <p>پاسخ نادرست یا بی‌پاسخ: ${questions.length-score}</p>
- <h2>نمره: ${percent}٪</h2>
- <p>بهترین رکورد: ${Math.max(old,percent)}٪</p>
- <hr>
- <h3>پاسخ‌های تشریحی</h3>
- ${questions.map((q,i)=>`<div class="panel">
- <b>سؤال ${i+1}: ${q.question}</b>
- <p>پاسخ شما: ${answers[i]?answers[i].chosen:'بدون پاسخ'}</p>
- <p class="stat">پاسخ صحیح: ${q.answer}</p>
- <p class="muted">${q.explanation}</p>
- </div>`).join('')}
- <button onclick="resetExam()">آزمون جدید</button>
- <button class="secondary" onclick="show('home')">صفحه اصلی</button>`;
-}
-function resetExam(){
- document.getElementById('result').classList.add('hidden');
- document.getElementById('setup').classList.remove('hidden');
-}
-function addTask(){
- const name=document.getElementById('task').value.trim();
- const time=Number(document.getElementById('duration').value);
- if(!name||time<5){alert('نام درس و زمان معتبر وارد کن.');return}
- const item=document.createElement('div');
- item.className='subject';
- item.innerText='📖 '+name+' — '+time+' دقیقه';
- document.getElementById('tasks').appendChild(item);
- document.getElementById('task').value='';
-}
-function celebrate(){
- const canvas=document.getElementById('confetti');
- const ctx=canvas.getContext('2d');
- canvas.width=innerWidth;canvas.height=innerHeight;
- const colors=['#28e0df','#ffd166','#ff687d','#38d996','#a78bfa'];
- const pieces=Array.from({length:110},()=>({
-  x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height*.4,
-  size:5+Math.random()*7,speed:3+Math.random()*5,
-  drift:Math.random()*4-2,angle:Math.random()*6,
-  color:colors[Math.floor(Math.random()*colors.length)]
- }));
- let frame=0;
- function draw(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  pieces.forEach(p=>{
-   p.y+=p.speed;p.x+=p.drift;p.angle+=.08;
-   ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.angle);
-   ctx.fillStyle=p.color;ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size);
-   ctx.restore();
-  });
-  frame++;
-  if(frame<100)requestAnimationFrame(draw);
-  else ctx.clearRect(0,0,canvas.width,canvas.height);
+
+function question(id){
+ let c=game.cards.find(x=>x.id===id);
+ let questions=[
+ {q:"حاصل ۱۲ × ۸ چیست؟",a:["۹۶","۸۶","۱۰۶"],correct:0},
+ {q:"کدام عدد اول است؟",a:["۹","۱۳","۲۱"],correct:1},
+ {q:"حاصل ۱۵۰ ÷ ۵ چیست؟",a:["۲۰","۲۵","۳۰"],correct:2},
+ {q:"مجموع زاویه‌های مثلث چند درجه است؟",a:["۱۸۰","۹۰","۳۶۰"],correct:0},
+ {q:"کدام سیاره به خورشید نزدیک‌تر است؟",a:["زمین","عطارد","مریخ"],correct:1},
+ {q:"حاصل ۷ به توان ۲ چیست؟",a:["۱۴","۴۹","۲۸"],correct:1},
+ {q:"کدام کسر بزرگ‌تر است؟",a:["۱/۲","۱/۳","۱/۴"],correct:0},
+ {q:"عدد بعدی دنباله ۲، ۴، ۸، ۱۶ چیست؟",a:["۲۰","۲۴","۳۲"],correct:2}
+ ];
+ let q=questions[Math.floor(Math.random()*questions.length)];
+ let answer=prompt(q.q+"\n"+
+ q.a.map((a,i)=>(i+1)+") "+a).join("\n")+
+ "\nشماره گزینه درست را وارد کن:");
+ if(answer===null)return;
+ if(Number(answer)-1===q.correct){
+ c.owned=true;
+ game.coins+=100;
+ save();
+ alert("🎉 آفرین! کارت "+c.name+" آزاد شد و ۱۰۰ سکه گرفتی!");
+ }else{
+ alert("❌ پاسخ اشتباه بود! دوباره تلاش کن.");
  }
- draw();
 }
-updateGrade();
+
+function battle(){
+ let power=game.cards.filter(c=>c.owned)
+ .reduce((sum,c)=>sum+c.level*10,0);
+ let result=Math.random()<Math.min(.85,.50+power/1000);
+
+ if(result){
+ game.wins++;
+ game.cups+=25;
+ game.coins+=100;
+ game.commander=Math.floor(game.wins/5)+1;
+ document.getElementById("message").textContent=
+ "🏆 پیروز شدی! ۲۵ کاپ و ۱۰۰ سکه دریافت کردی!";
+ }else{
+ game.losses++;
+ game.cups=Math.max(0,game.cups-10);
+ game.coins+=20;
+ document.getElementById("message").textContent=
+ "💥 این نبرد را باختی! ۱۰ کاپ از دست دادی ولی ۲۰ سکه گرفتی.";
+ }
+ save();
+}
+
+function resetGame(){
+ if(!confirm("تمام پیشرفت‌ها پاک شود؟"))return;
+ localStorage.removeItem("nobatNokhbegan");
+ location.reload();
+}
+
+render();
 </script>
 </body>
- 
-<style>
-.math7-card {
-  background:linear-gradient(135deg,#102b49,#07182c);
-  border:1px solid #18c9c0;
-  border-radius:18px;
-  padding:18px;
-  margin:15px 0;
-  color:#eafcff;
-  direction:rtl;
-  font-family:inherit;
-}
-.math7-card h2,.math7-card h3 {color:#20d6ce}
-.math7-card button {
-  background:#12aaa8;color:white;border:0;
-  border-radius:10px;padding:11px 16px;
-  margin:5px;font-weight:bold;cursor:pointer;
-}
-.math7-card .gold {color:#f5c45b}
-.math7-card .lesson-content {
-  line-height:2.1;font-size:15px;
-}
-.math7-card .math-question {
-  background:#173b59;padding:14px;
-  border-radius:12px;margin:12px 0;
-}
-.math7-card .answer {
-  display:block;width:100%;text-align:right;
-  background:#214766;
-}
-.math7-card .answer:active {background:#087e80}
-.math7-card .result {color:#ffd166;font-weight:bold}
-</style>
-
-<div id="math7-entry" class="math7-card">
-  <h2>📐 ریاضی هفتم</h2>
-  <h3>فصل اول: راهبردهای حل مسئله</h3>
-  <p>با یادگیری روش‌های حل مسئله، قدرت تفکر و استدلالت را تقویت کن.</p>
-  <button onclick="math7Open()">شروع آموزش فصل اول</button>
-</div>
-
-<div id="math7-page" class="math7-card" style="display:none">
-  <button onclick="math7Close()">⬅ بازگشت</button>
-  <h2>آموزش فصل اول</h2>
-  <div id="math7-content" class="lesson-content"></div>
-  <div id="math7-quiz"></div>
-</div>
-
-<script>
-const math7Lessons = [
-{
-title:"۱. راهبرد رسم شکل",
-body:"گاهی برای حل یک مسئله، کشیدن شکل به ما کمک می‌کند اطلاعات مسئله را بهتر ببینیم. شکل می‌تواند ساده و حتی بدون اندازه دقیق باشد.",
-example:"مثال: علی ۳ جعبه دارد. در هر جعبه ۴ توپ است. برای پیدا کردن تعداد توپ‌ها می‌توانیم سه گروه چهارتایی رسم کنیم: ۴ + ۴ + ۴ = ۱۲ توپ.",
-tip:"نکته: شکل باید اطلاعات مهم مسئله را نشان دهد."
-},
-{
-title:"۲. راهبرد الگوسازی",
-body:"در این روش، با پیدا کردن یک الگو می‌توانیم ادامه دنباله یا پاسخ مسئله را پیدا کنیم.",
-example:"مثال: دنباله ۲، ۵، ۸، ۱۱، ... هر بار ۳ واحد اضافه می‌شود؛ پس عدد بعدی ۱۴ است.",
-tip:"نکته: اختلاف یا رابطه بین عددها را بررسی کن."
-},
-{
-title:"۳. راهبرد حذف حالت‌های نامطلوب",
-body:"گاهی چند پاسخ احتمالی داریم. با بررسی شرط‌های مسئله، پاسخ‌های نادرست را حذف می‌کنیم تا به جواب مناسب برسیم.",
-example:"مثال: عددی بین ۲۰ و ۳۰ است، زوج است و بر ۴ بخش‌پذیر است. حالت‌های ممکن ۲۴ و ۲۸ هستند؛ اگر شرط دیگری عدد را مشخص کند، همان را انتخاب می‌کنیم.",
-tip:"نکته: تمام شرط‌های مسئله را بررسی کن."
-},
-{
-title:"۴. راهبرد الگویابی",
-body:"با بررسی چند حالت ساده‌تر می‌توانیم رابطه پنهان مسئله را کشف کنیم و از آن برای حل حالت اصلی استفاده کنیم.",
-example:"مثال: تعداد چوب‌کبریت‌های مربع‌های جداگانه به ترتیب ۴، ۸، ۱۲ است. برای ۴ مربع جداگانه به ۱۶ چوب‌کبریت نیاز داریم.",
-tip:"نکته: حالت‌های کوچک‌تر را بررسی کن و رابطه را پیدا کن."
-}
-];
-
-let math7Index=0;
-let math7Question=0;
-let math7Score=0;
-
-function math7Open(){
- document.getElementById("math7-entry").style.display="none";
- document.getElementById("math7-page").style.display="block";
- math7ShowLesson();
-}
-
-function math7Close(){
- document.getElementById("math7-page").style.display="none";
- document.getElementById("math7-entry").style.display="block";
-}
-
-function math7ShowLesson(){
- const l=math7Lessons[math7Index];
- document.getElementById("math7-content").innerHTML=`
- <h3>${l.title}</h3>
- <p>${l.body}</p>
- <div class="math-question">
- <b class="gold">مثال تشریحی:</b>
- <p>${l.example}</p>
- </div>
- <p class="gold">${l.tip}</p>
- <button onclick="math7Prev()" ${math7Index===0?"disabled":""}>قبلی</button>
- <button onclick="math7Next()">${math7Index===3?"رفتن به آزمون":"درس بعدی"}</button>
- <p>درس ${math7Index+1} از ۴</p>`;
- document.getElementById("math7-quiz").innerHTML="";
-}
-
-function math7Prev(){
- if(math7Index>0){math7Index--;math7ShowLesson();}
-}
-
-function math7Next(){
- if(math7Index<3){math7Index++;math7ShowLesson();}
- else{math7StartQuiz();}
-}
-
-const math7Questions=[
-{q:"عدد بعدی دنباله ۳، ۶، ۹، ۱۲ چیست؟",a:["۱۳","۱۵","۱۸","۲۰"],c:1,e:"هر بار ۳ واحد اضافه می‌شود."},
-{q:"برای حل مسئله‌ای که اطلاعات مکانی دارد، کدام راهبرد می‌تواند مفید باشد؟",a:["رسم شکل","حدس بی‌دلیل","نادیده گرفتن شرط‌ها","حذف اطلاعات"],c:0,e:"رسم شکل به نمایش اطلاعات کمک می‌کند."},
-{q:"عدد بعدی دنباله ۲، ۴، ۸، ۱۶ چیست؟",a:["۱۸","۲۴","۳۰","۳۲"],c:3,e:"هر عدد دو برابر عدد قبلی است."},
-{q:"در حل مسئله با حذف حالت‌ها چه می‌کنیم؟",a:["همه پاسخ‌ها را قبول می‌کنیم","حالت‌های ناسازگار با شرط‌ها را حذف می‌کنیم","صورت مسئله را عوض می‌کنیم","محاسبه نمی‌کنیم"],c:1,e:"شرط‌های مسئله پاسخ‌های نامناسب را حذف می‌کنند."},
-{q:"تعداد چوب‌کبریت‌های ۵ مربع جداگانه چندتاست؟",a:["۱۵","۱۶","۲۰","۲۵"],c:2,e:"هر مربع ۴ چوب‌کبریت دارد؛ ۵×۴=۲۰."}
-];
-
-function math7StartQuiz(){
- math7Question=0;math7Score=0;
- math7RenderQuiz();
-}
-
-function math7RenderQuiz(){
- const q=math7Questions[math7Question];
- document.getElementById("math7-content").innerHTML=
- `<h3>آزمون فصل اول</h3><p>سؤال ${math7Question+1} از ${math7Questions.length}</p>
- <div class="math-question">${q.q}</div>`;
- document.getElementById("math7-quiz").innerHTML=
- q.a.map((a,i)=>`<button class="answer" onclick="math7Answer(${i})">${["الف","ب","ج","د"][i]}) ${a}</button>`).join("");
-}
-
-function math7Answer(i){
- const q=math7Questions[math7Question];
- const correct=i===q.c;
- if(correct)math7Score++;
- document.getElementById("math7-quiz").innerHTML=
- `<p class="result">${correct?"آفرین! پاسخ درست بود 🎉":"پاسخ درست نبود."}</p>
- <p>${q.e}</p>
- <button onclick="math7Continue()">ادامه</button>`;
-}
-
-function math7Continue(){
- math7Question++;
- if(math7Question<math7Questions.length){math7RenderQuiz();}
- else{
- document.getElementById("math7-content").innerHTML=
- `<h2>آزمون تمام شد!</h2>
- <h3 class="gold">نمره: ${math7Score} از ۵</h3>
- <p>${math7Score===5?"عالی بود! 🌟": "تمرین کن تا بهتر بشی!"}</p>`;
- document.getElementById("math7-quiz").innerHTML=
- `<button onclick="math7StartQuiz()">تکرار آزمون</button>`;
- }
-}
-  </script>
- 
+</html>
